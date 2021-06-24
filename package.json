@@ -1,0 +1,27 @@
+{
+  "name": "chart-flows",
+  "version": "1.0.0",
+  "description": "",
+  "directories": {
+    "lib": "lib",
+    "test": "tests"
+  },
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-nodeunit": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-uglify-es": "*",
+    "grunt-contrib-concat": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MagicTurtle4/ChartFlowsJS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MagicTurtle4/ChartFlowsJS/issues"
+  },
+  "homepage": "https://github.com/MagicTurtle4/ChartFlowsJS#readme"
+}
