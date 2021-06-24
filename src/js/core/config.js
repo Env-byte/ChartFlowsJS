@@ -1,4 +1,0 @@
-ChartFlows.config = class Config {
-
-
-}

@@ -1,2 +1,3 @@
-ChartFlows.Symbols.Arrow = class Arrow extends ChartFlows.Symbols.Symbol {
-}
+ChartFlows.addSymbol('Arrow', class extends _Symbol{
+
+});

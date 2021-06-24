@@ -1,2 +1,3 @@
-ChartFlows.Blocks.Start = class Start extends ChartFlows.Blocks.Base{
-}
+ChartFlows.addBlock('Start', class extends _Block {
+
+});

@@ -11,8 +11,11 @@ module.exports = function (grunt) {
             dist: {
                 // the files to concatenate
                 src: [
-                    'src/js/core/api.js',
-                    'src/js/core/config.js',
+                    'src/js/config.js',
+                    'src/js/api.js',
+                    'src/js/main.js',
+                    'src/js/utils/*.js',
+                    'src/js/core/*.js',
                     'src/js/blocks/*.js',
                     'src/js/symbols/*.js'
                 ],
@@ -24,11 +27,10 @@ module.exports = function (grunt) {
             frontend: {
                 closurePath: 'node_modules/google-closure-compiler-java/',
                 js: '<%= concat.dist.dest %>',
-                jsOutputFile: 'dist/js/<%= pkg.name %>.min.js',
+                jsOutputFile: 'dist/<%= pkg.name %>.min.js',
                 maxBuffer: 500,
                 options: {
-                    compilation_level: 'ADVANCED_OPTIMIZATIONS',
-                    language_in: 'ECMASCRIPT5_STRICT'
+                    compilation_level: 'SIMPLE_OPTIMIZATIONS',
                 }
             }
         },

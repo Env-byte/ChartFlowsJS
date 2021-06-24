@@ -15,7 +15,6 @@
     "grunt-contrib-concat": "*",
     "grunt-closure-compiler": "0.0.21",
     "google-closure-compiler": "^20210601.0.0"
-
   },
   "repository": {
     "type": "git",
@@ -28,5 +27,7 @@
   },
   "homepage": "https://github.com/MagicTurtle4/ChartFlowsJS#readme",
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.3",
+    "jquery": "^3.6.0"
   }
 }

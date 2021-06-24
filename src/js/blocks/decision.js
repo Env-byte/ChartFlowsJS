@@ -1,2 +1,3 @@
-ChartFlows.Blocks.Decision = class Decision extends ChartFlows.Blocks.Base{
-}
+ChartFlows.addBlock('Decision', class extends _Block{
+
+});
