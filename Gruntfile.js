@@ -20,29 +20,27 @@ module.exports = function (grunt) {
                 dest: 'dist/<%= pkg.name %>.js'
             }
         },
-        uglify: {
-            options: {
-                // the banner is inserted at the top of the output
-                banner: '/*\n' +
-                    '<%= pkg.name %>\n' +
-                    'Version: <%= pkg.version %>\n' +
-                    'Date: <%= grunt.template.today("dd-mm-yyyy") %>\n' +
-                    '*/'
-            },
-            dist: {
-                files: {
-                    'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+        'closure-compiler': {
+            frontend: {
+                closurePath: 'node_modules/google-closure-compiler-java/',
+                js: '<%= concat.dist.dest %>',
+                jsOutputFile: 'dist/js/<%= pkg.name %>.min.js',
+                maxBuffer: 500,
+                options: {
+                    compilation_level: 'ADVANCED_OPTIMIZATIONS',
+                    language_in: 'ECMASCRIPT5_STRICT'
                 }
             }
-        }
+        },
     });
 
     // Load the plugin that provides the "uglify" task.
     grunt.loadNpmTasks('grunt-contrib-uglify-es');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-closure-compiler');
 
     // Default task(s).
 
-    grunt.registerTask('default', ['concat', 'uglify']);
+    grunt.registerTask('default', ['concat', 'closure-compiler']);
 
 };

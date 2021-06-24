@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "directories": {
-    "lib": "lib",
+    "dist": "dist",
     "test": "tests"
   },
   "devDependencies": {
@@ -12,7 +12,10 @@
     "grunt-contrib-nodeunit": "*",
     "grunt-contrib-uglify": "*",
     "grunt-contrib-uglify-es": "*",
-    "grunt-contrib-concat": "*"
+    "grunt-contrib-concat": "*",
+    "grunt-closure-compiler": "0.0.21",
+    "google-closure-compiler": "^20210601.0.0"
+
   },
   "repository": {
     "type": "git",
@@ -23,5 +26,7 @@
   "bugs": {
     "url": "https://github.com/MagicTurtle4/ChartFlowsJS/issues"
   },
-  "homepage": "https://github.com/MagicTurtle4/ChartFlowsJS#readme"
+  "homepage": "https://github.com/MagicTurtle4/ChartFlowsJS#readme",
+  "dependencies": {
+  }
 }
