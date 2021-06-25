@@ -1,5 +1,6 @@
-module.exports = function (grunt) {
+let sass = require('sass');
 
+module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -8,27 +9,27 @@ module.exports = function (grunt) {
                 // define a string to put between each file in the concatenated output
                 separator: '\n'
             },
-            dist: {
+            js: {
                 // the files to concatenate
                 src: [
-                    'src/js/typeDefinitions.js',
-                    'src/js/config.js',
-                    'src/js/api.js',
-                    'src/js/main.js',
-                    'src/js/utils/*.js',
-                    'src/js/core/*.js',
-                    'src/js/blocks/*.js',
-                    'src/js/symbols/*.js'
+                    '<%= pkg.directories.src %>/js/typeDefinitions.js',
+                    '<%= pkg.directories.src %>/js/config.js',
+                    '<%= pkg.directories.src %>/js/api.js',
+                    '<%= pkg.directories.src %>/js/main.js',
+                    '<%= pkg.directories.src %>/js/utils/*.js',
+                    '<%= pkg.directories.src %>/js/core/*.js',
+                    '<%= pkg.directories.src %>/js/blocks/*.js',
+                    '<%= pkg.directories.src %>/js/symbols/*.js'
                 ],
                 // the location of the resulting JS file
-                dest: 'dist/<%= pkg.name %>.js'
-            }
+                dest: '<%= pkg.directories.dist %>/<%= pkg.name %>.js'
+            },
         },
         'closure-compiler': {
             frontend: {
                 closurePath: 'node_modules/google-closure-compiler-java/',
-                js: '<%= concat.dist.dest %>',
-                jsOutputFile: 'dist/<%= pkg.name %>.min.js',
+                js: '<%= concat.js.dest %>',
+                jsOutputFile: '<%= pkg.directories.dist %>/<%= pkg.name %>.min.js',
                 maxBuffer: 500,
                 options: {
                     compilation_level: 'SIMPLE_OPTIMIZATIONS',
@@ -38,32 +39,20 @@ module.exports = function (grunt) {
         sass: {
             dist: {
                 options: {
-                    sourcemap: false,
-                    compress: false,
-                    yuicompress: false,
-                    style: 'expanded',
+                    implementation: sass,
                 },
                 files: {
-                    'dist/chart-flows.css': 'src/sass/**/*.scss'
+                    '<%= pkg.directories.dist %>/<%= pkg.name %>.min.css' : '<%= pkg.directories.src %>/sass/style.scss'
                 }
             },
         },
-        watch: {
-            css: {
-                files: 'src/sass/**/*.scss',
-                tasks: ['sass']
-            }
-        }
     });
 
-    // Load the plugin that provides the "uglify" task.
     grunt.loadNpmTasks('grunt-contrib-uglify-es');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-closure-compiler');
-    grunt.loadNpmTasks('grunt-closure-compiler');
+    grunt.loadNpmTasks('grunt-sass');
 
-    // Default task(s).
-
-    grunt.registerTask('default', ['concat', 'closure-compiler', 'watch', 'sass']);
+    grunt.registerTask('default', ['concat', 'closure-compiler', 'sass']);
 
 };
