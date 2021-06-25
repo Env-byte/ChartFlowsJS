@@ -1,9 +1,19 @@
-let _ChartFlowsApi = class {
+_ChartFlows.api = class {
     constructor() {
         this._blocks = {};
         this._symbols = {};
         this._version = 1.0;
-        this._config = new _ChartFlowsConfig();
+        this._config = new _ChartFlows.config();
+
+        /**
+         *
+         * @type {eventHandles}
+         */
+        this._events = {
+            ondragstart: undefined,
+            ondragend: undefined
+        }
+
     }
 
     /**
@@ -52,7 +62,17 @@ let _ChartFlowsApi = class {
         this._symbols[key] = value;
     }
 
-    init() {
+    /**
+     *
+     * @param {eventHandles|null} events
+     * @returns {{blocklist: (function(): _ChartFlowsBlocklist), flowchart: (function(): _ChartFlowsCanvas)}}
+     */
+    init(events) {
+
+        if (events) {
+            this.config.events = events;
+        }
+
         if (this.config.debug === 1) {
             console.log('ChartFlows ' + this._version + ' debugging enabled');
             console.log('init ChartFlows');
@@ -73,9 +93,13 @@ let _ChartFlowsApi = class {
 
     /**
      *
-     * @returns {_ChartFlowsConfig}
+     * @returns {_ChartFlows.config}
      */
     get config() {
         return this._config;
+    }
+
+    get events() {
+        return this._events;
     }
 }

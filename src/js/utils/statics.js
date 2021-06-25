@@ -1,8 +1,14 @@
-let _IdsInUse = []
-
-class StaticHelpers {
-
-    static _genId() {
+/**
+ *
+ * @type {{genId: (function(): string), releaseId(string): void, _IdsInUse: *[]}}
+ */
+_ChartFlows.utils.statics = {
+    _IdsInUse: [],
+    /**
+     *
+     * @returns {string}
+     */
+    genId: function () {
         let result, characters, charactersLength;
 
         do {
@@ -13,16 +19,21 @@ class StaticHelpers {
                 result += characters.charAt(Math.floor(Math.random() * charactersLength));
             }
             // check if id is currently in use
-        } while (_IdsInUse.indexOf(result) !== -1);
+        } while (this._IdsInUse.indexOf(result) !== -1);
 
-        _IdsInUse.push(result);
+        this._IdsInUse.push(result);
         return result;
-    }
-
-    static releaseId(result) {
-        let index = _IdsInUse.indexOf(result)
+    },
+    /**
+     *
+     * @param {string} result
+     */
+    releaseId(result) {
+        let index = this._IdsInUse.indexOf(result)
         if (index !== -1) {
-            _IdsInUse.splice(index, 1);
+            this._IdsInUse.splice(index, 1);
         }
     }
 }
+
+

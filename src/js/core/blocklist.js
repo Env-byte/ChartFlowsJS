@@ -1,7 +1,7 @@
 let _ChartFlowsBlocklist = class {
     constructor(element) {
         this._$element = element;
-        this._blocks = []
+        this._blocks = {}
     }
 
     /**
@@ -17,15 +17,15 @@ let _ChartFlowsBlocklist = class {
              * @type _Block
              */
             let blockObj = new classDef();
+
             blockObj.info = blockInfo;
-            let html = blockObj.generateBlock();
+            blockObj.init(this._$element);
 
             if (ChartFlows.config.debug === 1) {
                 console.log('Created Block', blockObj);
             }
 
-            this._blocks.push(blockObj)
-            this._$element.append(html);
+            this._blocks[blockObj.id] = (blockObj)
         }
     }
 }

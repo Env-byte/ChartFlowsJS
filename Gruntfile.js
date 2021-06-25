@@ -42,17 +42,29 @@ module.exports = function (grunt) {
                     implementation: sass,
                 },
                 files: {
-                    '<%= pkg.directories.dist %>/<%= pkg.name %>.min.css' : '<%= pkg.directories.src %>/sass/style.scss'
+                    '<%= pkg.directories.dist %>/<%= pkg.name %>.css': '<%= pkg.directories.src %>/sass/style.scss'
                 }
             },
         },
+        cssmin: {
+            options: {
+                mergeIntoShorthands: false,
+                roundingPrecision: -1
+            },
+            target: {
+                files: {
+                    '<%= pkg.directories.dist %>/<%= pkg.name %>.min.css': '<%= pkg.directories.dist %>/<%= pkg.name %>.css'
+                }
+            }
+        }
     });
 
     grunt.loadNpmTasks('grunt-contrib-uglify-es');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-closure-compiler');
     grunt.loadNpmTasks('grunt-sass');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
 
-    grunt.registerTask('default', ['concat', 'closure-compiler', 'sass']);
+    grunt.registerTask('default', ['concat', 'closure-compiler', 'sass', 'cssmin']);
 
 };

@@ -1,4 +1,4 @@
-const _TemplateHandler = function () {
+_ChartFlows.utils.template = function () {
 
     let expression = new RegExp(/(<\?%[\s]*)([A-z0-9.]+)([\s]*%\?>)/g)
 

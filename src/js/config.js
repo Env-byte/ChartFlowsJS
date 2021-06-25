@@ -1,5 +1,9 @@
-let _ChartFlowsConfig = class {
-
+let _ChartFlows = {
+    config: undefined,
+    api: undefined,
+    utils: {}
+}
+_ChartFlows.config = class {
     constructor() {
         this._debug = 0;
         this._container = $();
