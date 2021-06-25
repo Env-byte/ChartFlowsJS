@@ -11,6 +11,7 @@ module.exports = function (grunt) {
             dist: {
                 // the files to concatenate
                 src: [
+                    'src/js/typeDefinitions.js',
                     'src/js/config.js',
                     'src/js/api.js',
                     'src/js/main.js',
@@ -34,15 +35,35 @@ module.exports = function (grunt) {
                 }
             }
         },
+        sass: {
+            dist: {
+                options: {
+                    sourcemap: false,
+                    compress: false,
+                    yuicompress: false,
+                    style: 'expanded',
+                },
+                files: {
+                    'dist/chart-flows.css': 'src/sass/**/*.scss'
+                }
+            },
+        },
+        watch: {
+            css: {
+                files: 'src/sass/**/*.scss',
+                tasks: ['sass']
+            }
+        }
     });
 
     // Load the plugin that provides the "uglify" task.
     grunt.loadNpmTasks('grunt-contrib-uglify-es');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-closure-compiler');
+    grunt.loadNpmTasks('grunt-closure-compiler');
 
     // Default task(s).
 
-    grunt.registerTask('default', ['concat', 'closure-compiler']);
+    grunt.registerTask('default', ['concat', 'closure-compiler', 'watch', 'sass']);
 
 };

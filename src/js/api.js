@@ -24,7 +24,6 @@ let _ChartFlowsApi = class {
      *
      * @param {String} key
      * @param {Object} value
-     * @constructor
      */
     addBlock(key, value) {
         this._blocks[key] = value;
@@ -34,7 +33,6 @@ let _ChartFlowsApi = class {
      *
      * @param {String} key
      * @returns {function|boolean}
-     * @constructor
      */
     getSymbol(key) {
         if (this._symbols.hasOwnProperty(key)) {
@@ -49,7 +47,6 @@ let _ChartFlowsApi = class {
      *
      * @param {String} key
      * @param {Object} value
-     * @constructor
      */
     addSymbol(key, value) {
         this._symbols[key] = value;

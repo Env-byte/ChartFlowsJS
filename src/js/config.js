@@ -4,6 +4,7 @@ let _ChartFlowsConfig = class {
         this._debug = 0;
         this._container = $();
         this._blockList = $();
+        this._templates = {};
     }
 
     /**
@@ -52,5 +53,18 @@ let _ChartFlowsConfig = class {
      */
     set blockList(value) {
         this._blockList = value;
+    }
+
+    addTemplate(key, template) {
+        this._templates[key] = template;
+    }
+
+    getTemplate(key) {
+        if (this._templates.hasOwnProperty(key)) {
+            return this._templates[key];
+        } else {
+            console.error('Template ' + key + ' does not exist');
+            return '';
+        }
     }
 }
