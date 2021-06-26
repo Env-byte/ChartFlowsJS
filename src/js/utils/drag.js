@@ -9,7 +9,7 @@ _ChartFlows.utils.drag = function (canvas) {
         console.error('Canvas is not a jquery object')
     }
 
-    let offset = {}, mouse = {}, drag = {}, originalEle, dragEle, active;
+    let offset = {}, mouse = {}, drag = {}, originalEle, dragEle, active, rearrange;
 
     if (window.getComputedStyle(canvas[0]).position === "absolute" || window.getComputedStyle(canvas[0]).position === "fixed") {
         offset.x = canvas[0].getBoundingClientRect().left;
@@ -36,8 +36,10 @@ _ChartFlows.utils.drag = function (canvas) {
 
                 dragEle = newNode.appendTo(canvas)
                 dragEle.addClass("dragging");
+                originalEle.addClass("dragged-now");
 
                 active = true;
+
                 drag.x = mouse.x - (originalEle[0].getBoundingClientRect().left);
                 drag.y = mouse.y - (originalEle[0].getBoundingClientRect().top);
 
@@ -49,62 +51,30 @@ _ChartFlows.utils.drag = function (canvas) {
         },
         endHandle: function (event) {
 
-            if (event.which != 3 && (active || rearrange)) {
+            if (event.which !== 3 && (active || rearrange)) {
                 dragblock = false;
-                blockReleased();
+
                 if (!document.querySelector(".indicator").classList.contains("invisible")) {
                     document.querySelector(".indicator").classList.add("invisible");
                 }
+
                 if (active) {
-                    original.classList.remove("dragnow");
-                    drag.classList.remove("dragging");
+                    originalEle.removeClass("dragged-now");
+                    dragEle.removeClass("dragging");
                 }
+
+                let condition = (dragEle[0].getBoundingClientRect().top + window.scrollY) > (offset.y + window.scrollY) && (dragEle[0].getBoundingClientRect().left + window.scrollX) > (offset.x + window.scrollX);
+
                 if (parseInt(drag.querySelector(".blockid").value) === 0 && rearrange) {
                     firstBlock("rearrange")
-                } else if (active && blocks.length == 0 && (drag.getBoundingClientRect().top + window.scrollY) > (canvas_div.getBoundingClientRect().top + window.scrollY) && (drag.getBoundingClientRect().left + window.scrollX) > (canvas_div.getBoundingClientRect().left + window.scrollX)) {
+                } else if (active && blocks.length == 0 && condition) {
                     firstBlock("drop");
                 } else if (active && blocks.length == 0) {
                     removeSelection();
                 } else if (active) {
-                    var blocko = blocks.map(a => a.id);
-                    for (var i = 0; i < blocks.length; i++) {
-                        if (checkAttach(blocko[i])) {
-                            active = false;
-                            if (blockSnap(drag, false, document.querySelector(".blockid[value='" + blocko[i] + "']").parentNode)) {
-                                snap(drag, i, blocko);
-                            } else {
-                                active = false;
-                                removeSelection();
-                            }
-                            break;
-                        } else if (i == blocks.length - 1) {
-                            active = false;
-                            removeSelection();
-                        }
-                    }
+
                 } else if (rearrange) {
-                    var blocko = blocks.map(a => a.id);
-                    for (var i = 0; i < blocks.length; i++) {
-                        if (checkAttach(blocko[i])) {
-                            active = false;
-                            drag.classList.remove("dragging");
-                            snap(drag, i, blocko);
-                            break;
-                        } else if (i == blocks.length - 1) {
-                            if (beforeDelete(drag, blocks.filter(id => id.id == blocko[i])[0])) {
-                                active = false;
-                                drag.classList.remove("dragging");
-                                snap(drag, blocko.indexOf(prevblock), blocko);
-                                break;
-                            } else {
-                                rearrange = false;
-                                blockstemp = [];
-                                active = false;
-                                removeSelection();
-                                break;
-                            }
-                        }
-                    }
+
                 }
             }
 
