@@ -23,6 +23,7 @@
  * @typedef {object} BlockInfo
  * @property {string} name
  * @property {string} description
+ * @property {string} rootID
  * @property {string} icon
  * @property {BlockDataAttr[]} data
  */
@@ -31,5 +32,12 @@
  * @typedef {object} eventHandles
  * @property {function|null} ondragstart
  * @property {function|null} ondragend
+ * @property {function|null} ondragmove
+ *
+ * @property {function|null} ondrop
+ * @property {function|null} ondropout
+ * @property {function|null} ondropover
+ *
+ *
  */
 

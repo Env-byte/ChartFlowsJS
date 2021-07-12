@@ -65,7 +65,7 @@ _ChartFlows.api = class {
     /**
      *
      * @param {eventHandles|null} events
-     * @returns {{blocklist: (function(): _ChartFlowsBlocklist), flowchart: (function(): _ChartFlowsCanvas)}}
+     * @returns {{blockList: (function(): _ChartFlows.classes.blockList), flowchart: (function(): _ChartFlows.classes.canvas)}}
      */
     init(events) {
 
@@ -78,15 +78,15 @@ _ChartFlows.api = class {
             console.log('init ChartFlows');
         }
 
-        let _flowchart = new _ChartFlowsCanvas(this.config.container);
-        let _blocklist = new _ChartFlowsBlocklist(this.config.blockList);
+        let canvas = new _ChartFlows.classes.canvas(this.config.container);
+        let blockList = new _ChartFlows.classes.blockList(this.config.blockList);
 
         return {
-            flowchart: () => {
-                return _flowchart
+            canvas: () => {
+                return canvas
             },
-            blocklist: () => {
-                return _blocklist
+            blockList: () => {
+                return blockList
             },
         }
     }

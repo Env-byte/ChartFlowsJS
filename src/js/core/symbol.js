@@ -1,6 +1,6 @@
 ChartFlows.addSymbol('Symbol', class {
     constructor() {
-        this.id = StaticHelpers._genId()
+        this.id = _ChartFlows.utils.statics.genId()
     }
 
 });

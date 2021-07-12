@@ -28,14 +28,25 @@ ChartFlows.addBlock('Base', class {
          * Initialise Helpers
          */
         this._hTemplate = _ChartFlows.utils.template();
-        this._hDrag = _ChartFlows.utils.drag(canvas);
+        this._hDrag = _ChartFlows.utils.drag(canvas, this.info.rootID);
 
         this.$canvas = canvas;
         this.template = ChartFlows.config.getTemplate(this.type);
 
         this.$ = $(this._hTemplate.parse(this, this.template)).appendTo(this.$canvas);
         this.$.attr('id', 'block' + this.id);
+        this.$.addClass('ui-widget-content').addClass('block-item');
+
+        console.log(this)
+
         this._addDataAttr();
+
+        this.$.draggable({
+            drag: this._hDrag.moveBlock,
+            start: this._hDrag.startHandle,
+            stop: this._hDrag.endHandle,
+            revert: this._hDrag.revertHandle
+        })
     }
 
     /**
@@ -43,13 +54,13 @@ ChartFlows.addBlock('Base', class {
      * @private
      */
     _addDataAttr() {
-        console.log(this.info.data);
         if (this.info && Array.isArray(this.info.data)) {
             for (let i = 0, iL = this.info.data.length; i < iL; i++) {
                 this.$.attr('data-' + this.info.data[i].name, this.info.data[i].value);
             }
         }
     }
+
 
 });
 

@@ -1,4 +1,4 @@
-let _ChartFlowsBlocklist = class {
+_ChartFlows.classes.blockList = class {
     constructor(element) {
         this._$element = element;
         this._blocks = {}

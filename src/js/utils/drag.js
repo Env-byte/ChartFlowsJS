@@ -1,86 +1,56 @@
 /**
  *
  * @param {jQuery} canvas
- * @returns {{start: start}}
+ * @param {string} rootID css selector to get the root of the block
+ * @returns {{endHandle: endHandle, startHandle: startHandle}}
  */
-_ChartFlows.utils.drag = function (canvas) {
+_ChartFlows.utils.drag = function (canvas, rootID) {
+
 
     if (!canvas instanceof jQuery) {
         console.error('Canvas is not a jquery object')
     }
 
-    let offset = {}, mouse = {}, drag = {}, originalEle, dragEle, active, rearrange;
+    let originalEle, draggedEle;
 
-    if (window.getComputedStyle(canvas[0]).position === "absolute" || window.getComputedStyle(canvas[0]).position === "fixed") {
-        offset.x = canvas[0].getBoundingClientRect().left;
-        offset.y = canvas[0].getBoundingClientRect().top;
+
+    /**
+     *
+     * @param originalEle
+     * @returns {boolean|jQuery}
+     */
+    function getEle(originalEle) {
+        let res = originalEle.closest('.' + rootID);
+        if (res.length === 0) {
+            if (!originalEle.hasClass(rootID)) {
+                console.error('Cant find the root of the block using the id: ', rootID);
+                return false;
+            }
+        } else {
+            originalEle = res;
+        }
+        return originalEle
     }
 
     return {
-        startHandle: function (event) {
-
-            if (event.targetTouches) {
-                mouse.x = event.changedTouches[0].clientX;
-                mouse.y = event.changedTouches[0].clientY;
-            } else {
-                mouse.x = event.clientX;
-                mouse.y = event.clientY;
-            }
-
-            if (event.which !== 3 && $(event.target)) {
-                originalEle = $(event.target)
-                $(event.target).addClass("active");
-
-                let newNode = event.target.closest(".create-flowy").clone();
-                newNode.classList.add("block");
-
-                dragEle = newNode.appendTo(canvas)
-                dragEle.addClass("dragging");
-                originalEle.addClass("dragged-now");
-
-                active = true;
-
-                drag.x = mouse.x - (originalEle[0].getBoundingClientRect().left);
-                drag.y = mouse.y - (originalEle[0].getBoundingClientRect().top);
-
-                dragEle.style('left', mouse.x - drag.x + "px");
-                dragEle.style('top', mouse.y - drag.y + "px");
-
-                _ChartFlows.utils.eventDispatch.fire('ondragstart', originalEle, dragEle)
+        startHandle: function (event, ui) {
+            originalEle = getEle($(event.target));
+            if (originalEle) {
+                _ChartFlows.utils.eventDispatch.fire('ondragstart', originalEle, draggedEle)
             }
         },
-        endHandle: function (event) {
+        endHandle: function (event, ui) {
 
-            if (event.which !== 3 && (active || rearrange)) {
-                dragblock = false;
+            _ChartFlows.utils.eventDispatch.fire('ondragend', originalEle, draggedEle)
+        },
+        moveBlock: function (event, ui) {
 
-                if (!document.querySelector(".indicator").classList.contains("invisible")) {
-                    document.querySelector(".indicator").classList.add("invisible");
-                }
-
-                if (active) {
-                    originalEle.removeClass("dragged-now");
-                    dragEle.removeClass("dragging");
-                }
-
-                let condition = (dragEle[0].getBoundingClientRect().top + window.scrollY) > (offset.y + window.scrollY) && (dragEle[0].getBoundingClientRect().left + window.scrollX) > (offset.x + window.scrollX);
-
-                if (parseInt(drag.querySelector(".blockid").value) === 0 && rearrange) {
-                    firstBlock("rearrange")
-                } else if (active && blocks.length == 0 && condition) {
-                    firstBlock("drop");
-                } else if (active && blocks.length == 0) {
-                    removeSelection();
-                } else if (active) {
-
-                } else if (rearrange) {
-
-                }
-            }
-
-
-            _ChartFlows.utils.eventDispatch.fire('ondragstart', originalEle, dragEle)
-        }
+            _ChartFlows.utils.eventDispatch.fire('ondragmove', originalEle, draggedEle)
+        },
+        revertHandle: function () {
+            // todo check if dropped on canvas
+            return true
+        },
     }
 }
 

@@ -1,6 +1,6 @@
 /**
  *
- * @type {{genId: (function(): string), releaseId(string): void, _IdsInUse: *[]}}
+ * @type {{genId: (function(): string), releaseId(string): this, _IdsInUse: *[]}}
  */
 _ChartFlows.utils.statics = {
     _IdsInUse: [],
@@ -33,6 +33,7 @@ _ChartFlows.utils.statics = {
         if (index !== -1) {
             this._IdsInUse.splice(index, 1);
         }
+        return this;
     }
 }
 

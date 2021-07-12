@@ -12,6 +12,7 @@
           integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
 
     <link rel="stylesheet" href="/ChartFlowsJS/dist/chart-flows.min.css" type="text/css">
+    <link rel="stylesheet" href="/ChartFlowsJS/node_modules/jquery-ui-dist/jquery-ui.min.css" type="text/css">
 </head>
 <body>
 <br>
@@ -39,6 +40,7 @@
     </div>
 </div>
 <script src="/ChartFlowsJS/node_modules/jquery/dist/jquery.min.js"></script>
+<script src="/ChartFlowsJS/node_modules/jquery-ui-dist/jquery-ui.min.js"></script>
 <script src="/ChartFlowsJS/node_modules/@fortawesome/fontawesome-free/js/all.min.js"></script>
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
@@ -50,10 +52,13 @@
         ChartFlows.config.container = $('#flow-chart');
         ChartFlows.config.blockList = $('#block-list');
         ChartFlows.config.debug = 1;
-        let chartFlows = ChartFlows.init();
+        let chartFlows = ChartFlows.init({
 
-        chartFlows.blocklist().add('Process', {
+        });
+
+        chartFlows.blockList().add('Process', {
             name: 'Google Drive',
+            rootID: 'processBlock',
             description: 'Upload a file to Google Drive',
             icon: '<i class="fab fa-2x fa-google-drive"></i>',
             data: [

@@ -1,7 +1,8 @@
 let _ChartFlows = {
     config: undefined,
     api: undefined,
-    utils: {}
+    utils: {},
+    classes: {}
 }
 _ChartFlows.config = class {
     constructor() {
