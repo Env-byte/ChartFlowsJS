@@ -61,6 +61,11 @@ _ChartFlows.utils.template = function () {
     }
 
     return {
+        /**
+         *
+         * @param {_Block} object
+         * @returns {string}
+         */
         parse: (object) => {
             let html = '';
             if (ChartFlows.config.debug === 1) {

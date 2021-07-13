@@ -1,31 +1,28 @@
 /**
  *
- * @param {jQuery} canvas
- * @returns {{createHandle: createHandle, activateHandle: activateHandle, deactivateHandle: deactivateHandle, outHandle: outHandle, dropHandle: dropHandle, overHandle: overHandle}}
+ * @param {_ChartFlows.classes.canvas} canvas
+ * @returns {{dropHandle: dropHandle}}
  */
 _ChartFlows.utils.drop = function (canvas) {
-    let originalEle, draggedEle;
-    if (!canvas instanceof jQuery) {
+    let $block, $helperEle;
+    if (!canvas.element instanceof jQuery) {
         console.error('Canvas is not a jquery object')
     }
 
     return {
-        deactivateHandle: function (event, ui) {
-
-            _ChartFlows.utils.eventDispatch.fire('ondropdeactivate', originalEle, draggedEle)
-        },
+        /**
+         *
+         * @param event
+         * @param ui
+         */
         dropHandle: function (event, ui) {
-
-            _ChartFlows.utils.eventDispatch.fire('ondrop', originalEle, draggedEle)
-        },
-        outHandle: function (event, ui) {
-
-            _ChartFlows.utils.eventDispatch.fire('ondropout', originalEle, draggedEle)
-        },
-        overHandle: function (event, ui) {
-
-            _ChartFlows.utils.eventDispatch.fire('ondropover', originalEle, draggedEle)
-        },
+            console.log('event', event)
+            console.log('ui', ui)
+            $block = ui.helper.clone()
+            $block.appendTo(canvas.element)
+            canvas.addBlockEntity($block.attr('id'))
+            _ChartFlows.utils.eventDispatch.fire('ondrop', $block, $helperEle)
+        }
     }
 }
 

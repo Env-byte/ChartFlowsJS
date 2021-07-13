@@ -16,7 +16,6 @@ ChartFlows.addBlock('Base', class {
 
         this.id = _ChartFlows.utils.statics.genId()
         this.type = 'Base'
-
     }
 
     /**
@@ -28,24 +27,21 @@ ChartFlows.addBlock('Base', class {
          * Initialise Helpers
          */
         this._hTemplate = _ChartFlows.utils.template();
-        this._hDrag = _ChartFlows.utils.drag(canvas, this.info.rootID);
+        this._hDrag = _ChartFlows.utils.drag( this.info.rootID);
 
-        this.$canvas = canvas;
         this.template = ChartFlows.config.getTemplate(this.type);
 
-        this.$ = $(this._hTemplate.parse(this, this.template)).appendTo(this.$canvas);
+        this.$ = $(this._hTemplate.parse(this, this.template)).appendTo(canvas);
         this.$.attr('id', 'block' + this.id);
         this.$.addClass('ui-widget-content').addClass('block-item');
-
-        console.log(this)
 
         this._addDataAttr();
 
         this.$.draggable({
+            helper: "clone",
             drag: this._hDrag.moveBlock,
             start: this._hDrag.startHandle,
             stop: this._hDrag.endHandle,
-            revert: this._hDrag.revertHandle
         })
     }
 
@@ -60,8 +56,6 @@ ChartFlows.addBlock('Base', class {
             }
         }
     }
-
-
 });
 
 /**

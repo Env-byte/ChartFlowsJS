@@ -7,6 +7,7 @@ $block-type-colors: (
 .block-item {
   padding-top: 10px;
   width: 100%;
+  max-width: 280px;
   border: 1px solid transparent;
   transition-property: box-shadow, height;
   transition-duration: .2s;

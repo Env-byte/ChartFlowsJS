@@ -49,14 +49,15 @@
 <script>
     $(function () {
 
-        ChartFlows.config.container = $('#flow-chart');
-        ChartFlows.config.blockList = $('#block-list');
         ChartFlows.config.debug = 1;
-        let chartFlows = ChartFlows.init({
+        ChartFlows.init(
+            $('#flow-chart'),
+            $('#block-list'),
+            {
 
-        });
+            });
 
-        chartFlows.blockList().add('Process', {
+        ChartFlows.blockList.add('Process', {
             name: 'Google Drive',
             rootID: 'processBlock',
             description: 'Upload a file to Google Drive',

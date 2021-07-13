@@ -7,8 +7,11 @@ let _ChartFlows = {
 _ChartFlows.config = class {
     constructor() {
         this._debug = 0;
-        this._container = $();
-        this._blockList = $();
+        /**
+         *
+         * @type {Object.<string, string>}
+         * @private
+         */
         this._templates = {};
     }
 
@@ -30,40 +33,18 @@ _ChartFlows.config = class {
 
     /**
      *
-     * @returns {jQuery|HTMLElement}
+     * @param {string} key
+     * @param {string} template
      */
-    get container() {
-        return this._container;
-    }
-
-    /**
-     *
-     * @param  {jQuery|HTMLElement} value
-     */
-    set container(value) {
-        this._container = value;
-    }
-
-    /**
-     *
-     * @returns {jQuery|HTMLElement}
-     */
-    get blockList() {
-        return this._blockList;
-    }
-
-    /**
-     *
-     * @param {jQuery|HTMLElement} value
-     */
-    set blockList(value) {
-        this._blockList = value;
-    }
-
     addTemplate(key, template) {
         this._templates[key] = template;
     }
 
+    /**
+     *
+     * @param key
+     * @returns {string}
+     */
     getTemplate(key) {
         if (this._templates.hasOwnProperty(key)) {
             return this._templates[key];

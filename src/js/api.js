@@ -4,7 +4,8 @@ _ChartFlows.api = class {
         this._symbols = {};
         this._version = 1.0;
         this._config = new _ChartFlows.config();
-
+        this._canvas = null;
+        this._blockList = null;
         /**
          *
          * @type {eventHandles}
@@ -64,10 +65,11 @@ _ChartFlows.api = class {
 
     /**
      *
+     * @param {jQuery} container
+     * @param {jQuery} blockList
      * @param {eventHandles|null} events
-     * @returns {{blockList: (function(): _ChartFlows.classes.blockList), flowchart: (function(): _ChartFlows.classes.canvas)}}
      */
-    init(events) {
+    init(container, blockList, events) {
 
         if (events) {
             this.config.events = events;
@@ -78,17 +80,24 @@ _ChartFlows.api = class {
             console.log('init ChartFlows');
         }
 
-        let canvas = new _ChartFlows.classes.canvas(this.config.container);
-        let blockList = new _ChartFlows.classes.blockList(this.config.blockList);
+        this._canvas = new _ChartFlows.classes.canvas(container, this);
+        this._blockList = new _ChartFlows.classes.blockList(blockList);
+    }
 
-        return {
-            canvas: () => {
-                return canvas
-            },
-            blockList: () => {
-                return blockList
-            },
-        }
+    /**
+     *
+     * @returns {_ChartFlows.classes.canvas}
+     */
+    get canvas() {
+        return this._canvas;
+    }
+
+    /**
+     *
+     * @returns {_ChartFlows.classes.blockList}
+     */
+    get blockList() {
+        return this._blockList;
     }
 
     /**
@@ -99,6 +108,10 @@ _ChartFlows.api = class {
         return this._config;
     }
 
+    /**
+     *
+     * @returns {eventHandles}
+     */
     get events() {
         return this._events;
     }

@@ -1,18 +1,10 @@
 /**
  *
- * @param {jQuery} canvas
  * @param {string} rootID css selector to get the root of the block
  * @returns {{endHandle: endHandle, startHandle: startHandle}}
  */
-_ChartFlows.utils.drag = function (canvas, rootID) {
-
-
-    if (!canvas instanceof jQuery) {
-        console.error('Canvas is not a jquery object')
-    }
-
-    let originalEle, draggedEle;
-
+_ChartFlows.utils.drag = function ( rootID) {
+    let $originalEle, $helperEle;
 
     /**
      *
@@ -33,23 +25,37 @@ _ChartFlows.utils.drag = function (canvas, rootID) {
     }
 
     return {
+        /**
+         *
+         * @param event
+         * @param ui
+         */
         startHandle: function (event, ui) {
-            originalEle = getEle($(event.target));
-            if (originalEle) {
-                _ChartFlows.utils.eventDispatch.fire('ondragstart', originalEle, draggedEle)
+            $originalEle = getEle($(event.target));
+            $helperEle = ui.helper;
+
+            if ($originalEle) {
+                _ChartFlows.utils.eventDispatch.fire('ondragstart', $originalEle, $helperEle)
             }
         },
+        /**
+         *
+         * @param event
+         * @param ui
+         */
         endHandle: function (event, ui) {
-
-            _ChartFlows.utils.eventDispatch.fire('ondragend', originalEle, draggedEle)
+            //console.log(event, ui)
+           // $helperEle.remove();
+            _ChartFlows.utils.eventDispatch.fire('ondragend', $originalEle)
         },
+        /**
+         *
+         * @param event
+         * @param ui
+         */
         moveBlock: function (event, ui) {
 
-            _ChartFlows.utils.eventDispatch.fire('ondragmove', originalEle, draggedEle)
-        },
-        revertHandle: function () {
-            // todo check if dropped on canvas
-            return true
+            _ChartFlows.utils.eventDispatch.fire('ondragmove', $originalEle, $helperEle)
         },
     }
 }

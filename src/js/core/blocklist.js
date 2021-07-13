@@ -1,4 +1,8 @@
 _ChartFlows.classes.blockList = class {
+    /**
+     *
+     * @param {jQuery} element
+     */
     constructor(element) {
         this._$element = element;
         this._blocks = {}
@@ -27,5 +31,19 @@ _ChartFlows.classes.blockList = class {
 
             this._blocks[blockObj.id] = (blockObj)
         }
+    }
+
+    /**
+     *
+     * @param id
+     * @returns {boolean|_Block}
+     */
+    getBlock(id) {
+        if (this.hasOwnProperty(id)) {
+            return this._blocks[id];
+        } else {
+            return false;
+        }
+
     }
 }
