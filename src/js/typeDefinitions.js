@@ -23,7 +23,6 @@
  * @typedef {object} BlockInfo
  * @property {string} name
  * @property {string} description
- * @property {string} rootID
  * @property {string} icon
  * @property {BlockDataAttr[]} data
  */

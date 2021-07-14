@@ -14,7 +14,7 @@ ChartFlows.addBlock('Base', class {
         this.$canvas = undefined;
         this.$ = undefined;
 
-        this.id = _ChartFlows.utils.statics.genId()
+        this.id = 'block' + _ChartFlows.utils.statics.genId()
         this.type = 'Base'
     }
 
@@ -27,14 +27,13 @@ ChartFlows.addBlock('Base', class {
          * Initialise Helpers
          */
         this._hTemplate = _ChartFlows.utils.template();
-        this._hDrag = _ChartFlows.utils.drag( this.info.rootID);
+        this._hDrag = _ChartFlows.utils.drag(this.id);
 
         this.template = ChartFlows.config.getTemplate(this.type);
 
         this.$ = $(this._hTemplate.parse(this, this.template)).appendTo(canvas);
-        this.$.attr('id', 'block' + this.id);
-        this.$.addClass('ui-widget-content').addClass('block-item');
-
+        this.$.attr('id', this.id);
+        this.$.addClass('ui-widget-content').addClass('block-item').addClass('can-drop');
         this._addDataAttr();
 
         this.$.draggable({

@@ -8,7 +8,7 @@ if (typeof jQuery.ui === "undefined") {
 
 let ChartFlows = new _ChartFlows.api();
 
-ChartFlows.config.addTemplate('Process', `<div class="processBlock process">
+ChartFlows.config.addTemplate('Process', `<div class="process">
     <div class="container-fluid">
     <div class="row">
         <div class="col-md-2"><?% info.icon %?></div>

@@ -53,13 +53,10 @@
         ChartFlows.init(
             $('#flow-chart'),
             $('#block-list'),
-            {
-
-            });
+            {});
 
         ChartFlows.blockList.add('Process', {
             name: 'Google Drive',
-            rootID: 'processBlock',
             description: 'Upload a file to Google Drive',
             icon: '<i class="fab fa-2x fa-google-drive"></i>',
             data: [
@@ -72,7 +69,7 @@
                     value: 'external'
                 }
             ]
-        })
+        });
     })
 </script>
 </body>

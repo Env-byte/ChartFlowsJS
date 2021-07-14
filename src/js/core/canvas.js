@@ -16,7 +16,7 @@ _ChartFlows.classes.canvas = class {
         this._hDrop = _ChartFlows.utils.drop(this);
         this._$element.droppable({
             tolerance: "fit",
-            accept: ".block-item",
+            accept: ".block-item.can-drop",
             drop: this._hDrop.dropHandle
         })
     }
@@ -27,13 +27,15 @@ _ChartFlows.classes.canvas = class {
 
     /**
      *
-     * @param {string} blockID
+     * @param {jQuery} $block
      */
-    addBlockEntity(blockID) {
+    addBlockEntity($block) {
         let blockList = this._api.blockList;
         if (blockList instanceof _ChartFlows.classes.blockList) {
+            let blockID = $block.data('instance');
             let blockObj = this._api.blockList.getBlock(blockID)
-            this._blocks.addNode(new _ChartFlows.utils.treeNode(new this._itemClass(blockObj), []), 'root');
+            console.log(blockObj);
+            this._blocks.addNode(new _ChartFlows.utils.treeNode(new this._itemClass($block, blockObj, this), []), 'root');
         }
     }
 }

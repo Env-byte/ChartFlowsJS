@@ -115,6 +115,7 @@ _ChartFlows.utils.treeNode = class {
     constructor(value, children) {
         this.value = value;
         this.children = children;
+        this.symbol = null;
         this.id = 'Node_' + _ChartFlows.utils.statics.genId()
     }
 }

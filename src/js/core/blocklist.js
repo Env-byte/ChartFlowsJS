@@ -39,7 +39,7 @@ _ChartFlows.classes.blockList = class {
      * @returns {boolean|_Block}
      */
     getBlock(id) {
-        if (this.hasOwnProperty(id)) {
+        if (this._blocks.hasOwnProperty(id)) {
             return this._blocks[id];
         } else {
             return false;
