@@ -4,6 +4,7 @@
  * @property {BlockInfo} info
  * @property {string} template
  * @property {string} id
+ * @property {jQuery} $
  * @property {function} init setup the block, bind events and add data attr
  */
 

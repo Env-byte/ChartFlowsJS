@@ -28,14 +28,46 @@ _ChartFlows.classes.canvas = class {
     /**
      *
      * @param {jQuery} $block
+     * @param {_Block} blockObj
+     * @param {jQuery} snapped
      */
-    addBlockEntity($block) {
-        let blockList = this._api.blockList;
-        if (blockList instanceof _ChartFlows.classes.blockList) {
-            let blockID = $block.data('instance');
-            let blockObj = this._api.blockList.getBlock(blockID)
-            console.log(blockObj);
-            this._blocks.addNode(new _ChartFlows.utils.treeNode(new this._itemClass($block, blockObj, this), []), 'root');
+    addBlockEntity($block, blockObj, snapped) {
+        let blockCount = 0;
+        this._blocks.traverse(function (node) {
+            if (node) {
+                blockCount++;
+            }
+        });
+
+        let parent = 'root';
+        if (blockCount === 0) {
+            parent = 'root';
+        } else {
+            // this seems to work so far
+            if (snapped && snapped.length > 0) {
+                parent = this.getBlockEntity(snapped[0]).id;
+            } else {
+                // need to cancel drag if there is no snap
+                console.error('No Snap but more than one block');
+            }
         }
+
+        console.log('before', blockCount);
+
+        this._blocks.addNode(new _ChartFlows.utils.treeNode(new this._itemClass($block, blockObj, this), []), parent);
+        console.log('this._blocks', this._blocks);
     }
+
+    /**
+     *
+     * @param {jQuery} $ele
+     * @return {_ChartFlows.utils.treeNode}
+     */
+    getBlockEntity($ele) {
+        let id = $ele.closest('.block-item').attr('id');
+        let node = this._blocks.search(id);
+        console.log('node', node);
+        return node;
+    }
+
 }

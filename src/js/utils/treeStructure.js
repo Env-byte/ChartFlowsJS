@@ -9,16 +9,18 @@ _ChartFlows.utils.tree = class {
 
     /**
      *
-     * @param {function(_ChartFlows.utils.treeNode)} callback
+     * @param {function(_ChartFlows.utils.treeNode|boolean)} callback
      */
     traverse(callback) {
-        const self = this;
-
         function goThrough(node) {
-            callback(node);
-            node.children.forEach((child) => {
-                goThrough(child);
-            });
+            if (node instanceof _ChartFlows.utils.treeNode) {
+                callback(node);
+                node.children.forEach((child) => {
+                    goThrough(child);
+                });
+            } else {
+                callback(false);
+            }
         }
 
         goThrough(this._root);
@@ -36,6 +38,7 @@ _ChartFlows.utils.tree = class {
         }
 
         this.traverse((node) => {
+
             if (node.id === parentId) {
                 node.children.push(value);
             }
@@ -74,7 +77,7 @@ _ChartFlows.utils.tree = class {
     /**
      *
      * @param parentID
-     * @returns {boolean|FlatArray<*[], 1>[]}
+     * @returns {boolean|FlatArray<*[]>[]}
      */
     displayLeaves(parentID) {
         const parentNode = typeof parentID === 'string' ? this.search(parentID) : parentID;
@@ -109,13 +112,17 @@ _ChartFlows.utils.treeNode = class {
 
     /**
      *
-     * @param {_ChartFlows.classes.blockEntity} value
-     * @param {[_ChartFlows.utils.treeNode]} children
+     * @param {_ChartFlows.classes.blockEntity} blockEntity
+     * @param {_ChartFlows.utils.treeNode[]} children
      */
-    constructor(value, children) {
-        this.value = value;
+    constructor(blockEntity, children) {
+        this.value = blockEntity;
         this.children = children;
         this.symbol = null;
-        this.id = 'Node_' + _ChartFlows.utils.statics.genId()
+        /**
+         *
+         * @type {string}
+         */
+        this.id = blockEntity.id
     }
 }

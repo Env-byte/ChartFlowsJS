@@ -29,16 +29,27 @@ _ChartFlows.utils.drop = function (canvas) {
             let left = ui.offset.left - x + 31;
 
             //let $body = $('body');
-            // _ChartFlows.utils.draw.dot(left, y, 10, 'purple', canvas.element);
-            // _ChartFlows.utils.draw.dot(ui.offset.left, ui.offset.top, 10, 'blue', $body);
+            //_ChartFlows.utils.draw.dot(left, y, 10, 'purple', canvas.element);
+            //_ChartFlows.utils.draw.dot(ui.offset.left, ui.offset.top, 10, 'blue', $body);
 
             $block.css('left', left).css('top', y)
             //console.log('left', left, 'top', y);
             //console.log('ui', ui);
             //console.log('event', event);
 
+            if ($block.hasClass('can-drop')) {
+                // new block dragged on to canvas
+                let blockObj = _ChartFlows.utils.statics.getBlock($block)
+                if (blockObj) {
+                    let snapped = _ChartFlows.utils.statics.getSnappedElements(blockObj.$);
+                    canvas.addBlockEntity($block, blockObj, snapped);
+                }
+            } else {
+                // block entity being dragged around on canvas
+
+            }
+
             _ChartFlows.utils.eventDispatch.fire('ondrop', $block)
-            canvas.addBlockEntity($block);
         }
     }
 }

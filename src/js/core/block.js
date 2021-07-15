@@ -38,6 +38,9 @@ ChartFlows.addBlock('Base', class {
 
         this.$.draggable({
             helper: "clone",
+            snap: '.snapIndicator',
+            snapMode: 'outer',
+            snapTolerance : '20',
             drag: this._hDrag.moveBlock,
             start: this._hDrag.startHandle,
             stop: this._hDrag.endHandle,

@@ -36,15 +36,19 @@ _ChartFlows.utils.drag = function (rootID) {
             if ($originalEle) {
                 $helperEle = ui.helper;
                 $helperEle.attr('data-instance', $originalEle.attr('id'));
+
+                if ($originalEle.hasClass('can-drop')) {
+                    // new block dragged on to canvas
+
+                } else {
+                    // block entity being dragged around on canvas
+
+                }
+
                 _ChartFlows.utils.eventDispatch.fire('ondragstart', $originalEle, $helperEle)
             }
         },
 
-        /**
-         *
-         * @param event
-         * @param ui
-         */
         endHandle: function (event, ui) {
             _ChartFlows.utils.eventDispatch.fire('ondragend')
         },
