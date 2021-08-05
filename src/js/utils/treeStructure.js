@@ -82,7 +82,6 @@ _ChartFlows.utils.tree = class {
     displayLeaves(parentID) {
         const parentNode = typeof parentID === 'string' ? this.search(parentID) : parentID;
         let leafsRet = [];
-        console.log(parentNode);
 
         if (parentNode instanceof _ChartFlows.utils.treeNode) {
             if (parentNode.children) {
@@ -118,11 +117,75 @@ _ChartFlows.utils.treeNode = class {
     constructor(blockEntity, children) {
         this.value = blockEntity;
         this.children = children;
-        this.symbol = null;
+        this._symbols = {};
         /**
          *
          * @type {string}
          */
         this.id = blockEntity.id
+    }
+
+    repositionChildren() {
+
+        let child;
+
+        let top = this.value.$.height() + _ChartFlows.utils.statics.getApi().config.blockSpacing;
+        if (this.children.length === 0) {
+            return;
+        }
+        if (this.children.length === 1) {
+            child = this.children[0];
+            child.value.setPos(0 + 'px', top + 'px');
+        } else {
+
+            //set start to middle of the parent node
+            let leftStart = this.value.$.width() / 2;
+            //this assumes all blocks are the same width
+            leftStart = leftStart - ((this.value.$.width()) * (this.children.length * .5)) - ((this.children.length - 1) * 10);
+
+            for (let i = 0, iL = this.children.length; i < iL; i++) {
+                child = this.children[i];
+
+                // 20 margin between each one
+                let left = leftStart + (i * (this.value.$.width() + 20));
+
+                child.value.setPos(left + 'px', top + 'px');
+            }
+        }
+    }
+
+    rebuildNodeLinks() {
+        //the that the arrows should branch from
+        let child, arrow;
+        let classDef = ChartFlows.getSymbol('Arrow');
+
+        for (let key in this._symbols) {
+            if (this._symbols.hasOwnProperty(key)) {
+                this._symbols[key].remove();
+            }
+        }
+        this._symbols = [];
+
+        if (this.children.length === 0) {
+            return;
+        }
+
+        for (let i = 0, iL = this.children.length; i < iL; i++) {
+            arrow = new classDef(this);
+
+            child = this.children[i];
+            //for each child build arrow
+            arrow.render(this.value, child.value)
+
+            this._symbols[arrow.id] = (arrow);
+        }
+    }
+
+    /**
+     *
+     * @return {{({string}):(_Symbol)}}
+     */
+    get symbols() {
+        return this._symbols;
     }
 }

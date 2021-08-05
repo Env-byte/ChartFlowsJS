@@ -1,14 +1,9 @@
 /**
  *
- * @param {_ChartFlows.classes.canvas} canvas
  * @returns {{dropHandle: dropHandle}}
  */
-_ChartFlows.utils.drop = function (canvas) {
+_ChartFlows.utils.drop = function () {
     let $block;
-    if (!canvas.element instanceof jQuery) {
-        console.error('Canvas is not a jquery object')
-    }
-
     return {
         /**
          *
@@ -16,6 +11,11 @@ _ChartFlows.utils.drop = function (canvas) {
          * @param ui
          */
         dropHandle: function (event, ui) {
+            let canvas = _ChartFlows.utils.statics.getApi().canvas;
+            if (!canvas.element instanceof jQuery) {
+                console.error('Canvas is not a jquery object')
+            }
+
             $block = ui.helper.clone();
             $block.appendTo(canvas.element);
 
@@ -33,23 +33,23 @@ _ChartFlows.utils.drop = function (canvas) {
             //_ChartFlows.utils.draw.dot(ui.offset.left, ui.offset.top, 10, 'blue', $body);
 
             $block.css('left', left).css('top', y)
-            //console.log('left', left, 'top', y);
-            //console.log('ui', ui);
-            //console.log('event', event);
+
 
             if ($block.hasClass('can-drop')) {
-                // new block dragged on to canvas
-                let blockObj = _ChartFlows.utils.statics.getBlock($block)
+                let blockObj = _ChartFlows.utils.statics.getBlock($block);
                 if (blockObj) {
-                    let snapped = _ChartFlows.utils.statics.getSnappedElements(blockObj.$);
+                    // new block dragged on to canvas
+                    let result = _ChartFlows.utils.eventDispatch.fire('drop', event, blockObj);
+
+                    if (result === false) {
+                        $block.remove();
+                        return;
+                    }
+                    let snapped = _ChartFlows.utils.statics.getSnappedElements(blockObj.$, $block);
                     canvas.addBlockEntity($block, blockObj, snapped);
                 }
-            } else {
-                // block entity being dragged around on canvas
 
             }
-
-            _ChartFlows.utils.eventDispatch.fire('ondrop', $block)
         }
     }
 }

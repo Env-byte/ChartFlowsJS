@@ -5,7 +5,6 @@ $block-type-colors: (
 );
 
 .block-item {
-  padding-top: 10px;
   width: 100%;
   max-width: 280px;
   border: 1px solid transparent;
@@ -16,7 +15,6 @@ $block-type-colors: (
   box-shadow: 0 0 30px rgb(22 33 74 / 0%);
   box-sizing: border-box;
   z-index: 122 !important;
-  padding-bottom: 10px;
 
   &:hover {
     box-shadow: 0 4px 30px rgb(22 33 74 / 8%);
@@ -26,8 +24,18 @@ $block-type-colors: (
   }
 }
 
+.block-item > .container-fluid {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
 @each $name, $color in $block-type-colors {
   .block-item.#{$name} {
     border-color: $color;
   }
+}
+
+.block-item.can-drop {
+  margin-bottom: 10px;
+  margin-top: 10px;
 }

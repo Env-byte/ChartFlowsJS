@@ -11,7 +11,11 @@
 /**
  *
  * @typedef {Function} _Symbol
- * @property {string} id
+ * @property {string} _id
+ * @property {jQuery} _$
+ * @property {_ChartFlows.utils.treeNode } _parent
+ * @property {Function} render
+ * @property {Function} remove
  */
 
 /**
@@ -26,18 +30,5 @@
  * @property {string} description
  * @property {string} icon
  * @property {BlockDataAttr[]} data
- */
-
-/**
- * @typedef {object} eventHandles
- * @property {function|null} ondragstart
- * @property {function|null} ondragend
- * @property {function|null} ondragmove
- *
- * @property {function|null} ondrop
- * @property {function|null} ondropout
- * @property {function|null} ondropover
- *
- *
  */
 

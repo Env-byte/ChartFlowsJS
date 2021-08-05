@@ -297,7 +297,7 @@ var flowy = function(canvas, grab, release, snapping, rearrange, spacing_x, spac
             if (!rearrange) {
                 canvas_div.appendChild(drag);
             }
-            var totalwidth = 0;
+            var totalwidth = 0;``
             var totalremove = 0;
             var maxheight = 0;
             for (var w = 0; w < blocks.filter(id => id.parent == blocko[i]).length; w++) {

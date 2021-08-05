@@ -54,28 +54,66 @@ _ChartFlows.utils.statics = {
      * @param {jQuery} $block
      * @returns {_ChartFlows.utils.treeNode}
      */
-    getBlockEntity($block) {
+    getBlockEntityNode($block) {
         let canvas = ChartFlows.canvas;
-        return canvas.getBlockEntity($block);
+        return canvas.getBlockEntityNode($block);
     },
 
     /**
      *
      * @param $ele The jQuery element that is draggable
-     * @return {boolean|jQuery}
+     * @param $helper The jQuery element that is draggable
+     * @return {jQuery[]}
      */
-    getSnappedElements($ele) {
+    getSnappedElements($ele, $helper) {
         let data = $ele.draggable("instance");
-        console.log('draggable', $ele);
-        console.log('data', data);
+        let eleOffset
+        if ($helper) {
+            eleOffset = this.offset($helper[0]);
+        } else {
+            eleOffset = this.offset($ele[0]);
+        }
+
+        let width = $ele.width();
+
+        // Work out the x min and x max for the snapping
+        let leftBound = eleOffset.left + ChartFlows.config.snapTolerance;
+        let rightBound = eleOffset.left + width + ChartFlows.config.snapTolerance;
+
         if (data) {
             /* Pull out only the snap targets that are "snapping": */
-            return $.map(data.snapElements, function (element) {
-                return element.snapping ? $(element.item) : null;
-            })
-
+            return $.map(data.snapElements, (element) => {
+                if (element.snapping) {
+                    if ($(element.item).closest('.block-item').attr('id') !== $ele.attr('id')) {
+                        let itemOffset = this.offset(element.item);
+                        if (itemOffset.left > leftBound && itemOffset.left < rightBound) {
+                            return $(element.item)
+                        }
+                    }
+                }
+            });
         }
-        return false;
+        return [];
+    },
+
+    /**
+     *
+     * @return {_ChartFlows.api }
+     */
+    getApi() {
+        return ChartFlows
+    },
+
+    /**
+     *
+     * @param el
+     * @return {{top: number, left: number}}
+     */
+    offset(el) {
+        let rect = el.getBoundingClientRect(),
+            scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+            scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        return {top: rect.top + scrollTop, left: rect.left + scrollLeft}
     }
 }
 

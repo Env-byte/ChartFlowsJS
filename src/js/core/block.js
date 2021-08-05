@@ -1,5 +1,6 @@
 ChartFlows.addBlock('Base', class {
-    constructor() {
+
+    constructor(id) {
         /**
          * Helpers - initialised in init
          */
@@ -11,18 +12,17 @@ ChartFlows.addBlock('Base', class {
          */
         this.info = undefined;
         this.template = undefined;
-        this.$canvas = undefined;
         this.$ = undefined;
 
-        this.id = 'block' + _ChartFlows.utils.statics.genId()
+        this.id = id;
         this.type = 'Base'
     }
 
     /**
      *
-     * @param {jQuery|HTMLElement} canvas
+     * @param {jQuery|HTMLElement} $blockList
      */
-    init(canvas) {
+    init($blockList) {
         /**
          * Initialise Helpers
          */
@@ -31,7 +31,7 @@ ChartFlows.addBlock('Base', class {
 
         this.template = ChartFlows.config.getTemplate(this.type);
 
-        this.$ = $(this._hTemplate.parse(this, this.template)).appendTo(canvas);
+        this.$ = $(this._hTemplate.parse(this, this.template)).appendTo($blockList);
         this.$.attr('id', this.id);
         this.$.addClass('ui-widget-content').addClass('block-item').addClass('can-drop');
         this._addDataAttr();
@@ -40,7 +40,7 @@ ChartFlows.addBlock('Base', class {
             helper: "clone",
             snap: '.snapIndicator',
             snapMode: 'outer',
-            snapTolerance : '20',
+            snapTolerance: ChartFlows.config.snapTolerance,
             drag: this._hDrag.moveBlock,
             start: this._hDrag.startHandle,
             stop: this._hDrag.endHandle,

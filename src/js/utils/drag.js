@@ -4,7 +4,8 @@
  * @returns {{endHandle: endHandle, startHandle: startHandle}}
  */
 _ChartFlows.utils.drag = function (rootID) {
-    let $originalEle, $helperEle;
+    let $originalEle, $helperEle, visibleIndicator;
+    const canvas = _ChartFlows.utils.statics.getApi().canvas;
 
     /**
      *
@@ -31,7 +32,7 @@ _ChartFlows.utils.drag = function (rootID) {
          * @param event
          * @param ui
          */
-        startHandle: function (event, ui) {
+        startHandle: (event, ui) => {
             $originalEle = getEle($(event.target));
             if ($originalEle) {
                 $helperEle = ui.helper;
@@ -45,22 +46,45 @@ _ChartFlows.utils.drag = function (rootID) {
 
                 }
 
-                _ChartFlows.utils.eventDispatch.fire('ondragstart', $originalEle, $helperEle)
+                _ChartFlows.utils.eventDispatch.fire('dragstart', $originalEle, $helperEle)
             }
         },
+        endHandle: function () {
 
-        endHandle: function (event, ui) {
-            _ChartFlows.utils.eventDispatch.fire('ondragend')
-        },
+            // block entity being dragged around on canvas
+            if (!$originalEle.hasClass('can-drop')) {
+                let blockEntity = _ChartFlows.utils.statics.getBlockEntityNode($originalEle).value;
+                let snapped = _ChartFlows.utils.statics.getSnappedElements($originalEle);
+                canvas.changeBlockEntityParent(blockEntity, snapped)
+            }
 
-        /**
-         *
-         * @param event
-         * @param ui
-         */
-        moveBlock: function (event, ui) {
-            _ChartFlows.utils.eventDispatch.fire('ondragmove', $originalEle, $helperEle)
+            if (visibleIndicator) {
+                visibleIndicator.css('visibility', 'hidden');
+            }
+
+            _ChartFlows.utils.eventDispatch.fire('dragend')
         },
+        moveBlock: function () {
+            let snapped = _ChartFlows.utils.statics.getSnappedElements($originalEle, $helperEle);
+            if (snapped && snapped.length > 0) {
+                if (visibleIndicator !== snapped[0]) {
+                    if (visibleIndicator) {
+                        visibleIndicator.css('visibility', 'hidden');
+                    }
+                    visibleIndicator = snapped[0];
+                    visibleIndicator.css('visibility', 'visible');
+                }
+            } else {
+                if (visibleIndicator) {
+                    visibleIndicator.css('visibility', 'hidden');
+                }
+            }
+
+            _ChartFlows.utils.eventDispatch.fire('dragmove', $originalEle, $helperEle)
+        },
+        updateRootID: (id) => {
+            rootID = id;
+        }
     }
 }
 

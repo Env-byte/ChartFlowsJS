@@ -1,6 +1,6 @@
 ChartFlows.addBlock('Decision', class extends _Block {
-    constructor() {
-        super();
+    constructor(id) {
+        super(id);
         this.type = 'Decision';
     }
 });

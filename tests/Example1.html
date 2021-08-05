@@ -25,6 +25,8 @@
                     <div class="panel-body">
                         <h3>Side Panel</h3>
                         <div id="block-list"></div>
+
+                        <button id="saveBtn" class="btn btn-success">Save</button>
                     </div>
                 </div>
             </div>
@@ -52,10 +54,17 @@
         ChartFlows.config.debug = 1;
         ChartFlows.init(
             $('#flow-chart'),
-            $('#block-list'),
-            {});
+            $('#block-list')
+        );
+
+        $('#saveBtn').on('click', () => {
+            let data = ChartFlows.save();
+            console.log(data);
+        })
+
 
         ChartFlows.blockList.add('Process', {
+            id: 'GoogleDrive',
             name: 'Google Drive',
             description: 'Upload a file to Google Drive',
             icon: '<i class="fab fa-2x fa-google-drive"></i>',
@@ -70,9 +79,106 @@
                 }
             ]
         });
+        ChartFlows.blockList.add('Process', {
+            id: 'Dropbox',
+            name: 'Dropbox',
+            description: 'Upload a file to Google Drive',
+            icon: '<i class="fab fa-2x fa-dropbox"></i>',
+            data: [
+                {
+                    name: 'test',
+                    value: '123'
+                },
+                {
+                    name: 'db-type',
+                    value: 'external'
+                }
+            ]
+        });
+        /*
+       ChartFlows.load({
+            "tree": [
+                {
+                    "id": "Entity_7cr5FMSzRcjq",
+                    "left": "467px",
+                    "top": "148px",
+                    "info": {
+                        "name": "Google Drive",
+                        "description": "Upload a file to Google Drive",
+                        "icon": "<i class=\"fab fa-2x fa-google-drive\"></i>",
+                        "data": [
+                            {
+                                "name": "test",
+                                "value": "123"
+                            },
+                            {
+                                "name": "db-type",
+                                "value": "external"
+                            }
+                        ]
+                    },
+                    "parentID": null,
+                    "_instanceOf": "GoogleDrive"
+                },
+                {
+                    "id": "Entity_xyyisiWsXWIZ",
+                    "left": "0px",
+                    "top": "160px",
+                    "info": {
+                        "name": "Dropbox",
+                        "description": "Upload a file to Google Drive",
+                        "icon": "<i class=\"fab fa-2x fa-dropbox\"></i>",
+                        "data": [
+                            {
+                                "name": "test",
+                                "value": "123"
+                            },
+                            {
+                                "name": "db-type",
+                                "value": "external"
+                            }
+                        ]
+                    },
+                    "parentID": "Entity_7cr5FMSzRcjq",
+                    "_instanceOf": "Dropbox"
+                }
+            ]
+        })
+        */
+
+        /*
+        Was working when tested
+        ChartFlows.on('drop', function (e, block) {
+              console.log('e', e)
+              console.log('block', block);
+              if (block.info.name === 'Dropbox') {
+                  return false;
+              }
+          })
+          */
+
+        /*
+        Was working when tested
+        ChartFlows.on('blocksnap', function (block, parentBlock) {
+            console.log('block', block)
+            console.log('parentBlock', parentBlock);
+            if (parentBlock) {
+                if (parentBlock.info.name === block.info.name) {
+                    return false;
+                }
+            }
+        })
+        */
+
+        /*
+        Was working when tested
+        ChartFlows.on('blockclick', function (event, block) {
+            console.log('event', event)
+            console.log('block', block);
+        })
+         */
     })
 
-    console.log(_ChartFlows);
 </script>
 </body>
 </html>

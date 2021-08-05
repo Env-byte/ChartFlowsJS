@@ -5,6 +5,14 @@ let _ChartFlows = {
     classes: {}
 }
 _ChartFlows.config = class {
+    get blockSpacing() {
+        return this._blockSpacing;
+    }
+
+    set blockSpacing(value) {
+        this._blockSpacing = value;
+    }
+
     constructor() {
         this._debug = 0;
         /**
@@ -13,6 +21,24 @@ _ChartFlows.config = class {
          * @private
          */
         this._templates = {};
+        this._snapTolerance = 30;
+        this._blockSpacing = 80;
+    }
+
+    /**
+     *
+     * @param {number} value
+     */
+    set snapTolerance(value) {
+        this._snapTolerance = value;
+    }
+
+    /**
+     *
+     * @return {number}
+     */
+    get snapTolerance() {
+        return this._snapTolerance;
     }
 
     /**

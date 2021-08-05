@@ -1,0 +1,20 @@
+$arrow-color: #C5CCD0;
+
+.arrowLine {
+  stroke: $arrow-color;
+  stroke-width: 3px
+}
+
+.arrowHead {
+  fill: $arrow-color;
+}
+
+.arrow-block {
+  position: absolute;
+  z-index: 133;
+  overflow: hidden;
+}
+
+.arrow-block svg {
+  width: 100%;
+}
