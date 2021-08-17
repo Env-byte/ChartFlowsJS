@@ -23,6 +23,7 @@ _ChartFlows.config = class {
         this._templates = {};
         this._snapTolerance = 30;
         this._blockSpacing = 80;
+        this.showStart = true;
     }
 
     /**

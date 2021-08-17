@@ -55,7 +55,9 @@ _ChartFlows.utils.drag = function (rootID) {
             if (!$originalEle.hasClass('can-drop')) {
                 let blockEntity = _ChartFlows.utils.statics.getBlockEntityNode($originalEle).value;
                 let snapped = _ChartFlows.utils.statics.getSnappedElements($originalEle);
-                canvas.changeBlockEntityParent(blockEntity, snapped)
+                if (blockEntity.parentID) {
+                    canvas.changeBlockEntityParent(blockEntity, snapped)
+                }
             }
 
             if (visibleIndicator) {
@@ -87,4 +89,3 @@ _ChartFlows.utils.drag = function (rootID) {
         }
     }
 }
-

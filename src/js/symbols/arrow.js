@@ -7,7 +7,7 @@ $('body').append(
     '</defs>' +
     '</svg>'
 );
-ChartFlows.addSymbol('Arrow', class extends _Symbol {
+_ChartFlows.classes._Arrow = class extends _ChartFlows.classes._Symbol {
 
     constructor(parent) {
         super(parent);
@@ -79,7 +79,7 @@ ChartFlows.addSymbol('Arrow', class extends _Symbol {
         $node
             .css('left', left)
             .css('top', top)
-            .css('height', (top) + 'px')
+            .css('height', (y) + 'px')
             .css('width', (distance + 20) + 'px');
 
         this._$ = $node;
@@ -90,4 +90,5 @@ ChartFlows.addSymbol('Arrow', class extends _Symbol {
     remove() {
         this._$.remove();
     }
-});
+}
+ChartFlows.addSymbol('Arrow', _ChartFlows.classes._Arrow);

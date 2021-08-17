@@ -6,8 +6,8 @@ _ChartFlows.api = class {
         this._config = new _ChartFlows.config();
         this._canvas = null;
         this._blockList = null;
+        this._events = {};
 
-        this._events = {}
     }
 
     /**
@@ -69,6 +69,8 @@ _ChartFlows.api = class {
 
         this._canvas = new _ChartFlows.classes.canvas(container, this);
         this._blockList = new _ChartFlows.classes.blockList(blockList);
+
+        _ChartFlows.utils.eventDispatch.fire('initialized', this);
     }
 
     /**
@@ -137,6 +139,8 @@ _ChartFlows.api = class {
             console.error("Object key 'tree' is not an array");
             return;
         }
+
+        //todo clear canvas
 
         let blockTemplates = this._blockList.blocks;
         let nodes = {}, node, parent, treeVal, $template;

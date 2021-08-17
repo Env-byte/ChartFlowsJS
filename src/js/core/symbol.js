@@ -1,4 +1,4 @@
-ChartFlows.addSymbol('Symbol', class {
+_ChartFlows.classes._Symbol = class {
     /**
      *
      * @param {_ChartFlows.utils.treeNode } parent
@@ -37,11 +37,5 @@ ChartFlows.addSymbol('Symbol', class {
     remove() {
 
     }
-});
-
-/**
- *
- * @type {_Symbol}
- * @private
- */
-const _Symbol = ChartFlows.getSymbol('Symbol')
+}
+ChartFlows.addSymbol('Symbol', _ChartFlows.classes._Symbol);

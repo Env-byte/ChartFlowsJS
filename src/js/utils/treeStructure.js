@@ -106,7 +106,6 @@ _ChartFlows.utils.tree = class {
         return this._root;
     }
 }
-
 _ChartFlows.utils.treeNode = class {
 
     /**
@@ -183,7 +182,7 @@ _ChartFlows.utils.treeNode = class {
 
     /**
      *
-     * @return {{({string}):(_Symbol)}}
+     * @return {{({string}):(_ChartFlows.classes._Symbol)}}
      */
     get symbols() {
         return this._symbols;

@@ -12,11 +12,10 @@ module.exports = function (grunt) {
             js: {
                 // the files to concatenate
                 src: [
-                    '<%= pkg.directories.src %>/js/typeDefinitions.js',
                     '<%= pkg.directories.src %>/js/config.js',
                     '<%= pkg.directories.src %>/js/api.js',
-                    '<%= pkg.directories.src %>/js/main.js',
                     '<%= pkg.directories.src %>/js/utils/*.js',
+                    '<%= pkg.directories.src %>/js/main.js',
                     '<%= pkg.directories.src %>/js/core/*.js',
                     '<%= pkg.directories.src %>/js/blocks/*.js',
                     '<%= pkg.directories.src %>/js/symbols/*.js'

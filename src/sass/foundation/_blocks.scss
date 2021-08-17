@@ -3,25 +3,32 @@ $block-type-colors: (
         "process": #17a2b8,
         "decision": #ffc107,
 );
+.block-item.can-drop {
+  box-shadow: 1px 1px 30px rgb(22 33 74 / 0%);
+  &:hover {
+    box-shadow: 0 4px 4px rgb(0 0 0 / 56%);
+  }
+}
 
 .block-item {
   width: 100%;
   max-width: 280px;
   border: 1px solid transparent;
-  transition-property: box-shadow, height;
-  transition-duration: .2s;
-  transition-timing-function: cubic-bezier(.05, .03, .35, 1);
   border-radius: 5px;
-  box-shadow: 0 0 30px rgb(22 33 74 / 0%);
   box-sizing: border-box;
   z-index: 122 !important;
+  min-height: 60px;
 
   &:hover {
-    box-shadow: 0 4px 30px rgb(22 33 74 / 8%);
     border-radius: 5px;
     background-color: #FFF;
     cursor: pointer;
   }
+}
+
+.block-item.start {
+  border-radius: 55%;
+  background: white;
 }
 
 .block-item > .container-fluid {
@@ -38,4 +45,28 @@ $block-type-colors: (
 .block-item.can-drop {
   margin-bottom: 10px;
   margin-top: 10px;
+}
+
+/* #starter node
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+$decision-node-size: 70px;
+.decision-node {
+  background: #fff;
+  height: $decision-node-size;
+  text-align: center;
+  transform: rotate(45deg);
+  width: $decision-node-size;
+  border: 1px solid #28a745;
+  position: absolute;
+  top: 150px;
+  left: 150px
+}
+
+.decision-node-inner {
+  color: #333;
+  display: table-cell;
+  height: $decision-node-size;
+  transform: rotate(-45deg);
+  vertical-align: middle;
+  width: $decision-node-size;
 }

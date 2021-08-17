@@ -116,5 +116,3 @@ _ChartFlows.utils.statics = {
         return {top: rect.top + scrollTop, left: rect.left + scrollLeft}
     }
 }
-
-

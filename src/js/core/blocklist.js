@@ -11,20 +11,18 @@ _ChartFlows.classes.blockList = class {
     /**
      *
      * @param {string} type
-     * @param {BlockInfo} blockInfo
+     * @param {{}} blockInfo
      */
     add(type, blockInfo) {
         let classDef = ChartFlows.getBlock(type);
-
+        console.log(classDef);
         if (classDef) {
 
             if (!blockInfo.hasOwnProperty('id') || blockInfo.id === '') {
                 console.error('The block must have an id')
                 return;
             }
-            /**
-             * @type _Block
-             */
+
             let blockObj = new classDef(blockInfo.id);
 
             //remove from the info
@@ -48,7 +46,7 @@ _ChartFlows.classes.blockList = class {
     /**
      *
      * @param id
-     * @returns {boolean|_Block}
+     * @returns {boolean|_ChartFlows.classes._Block}
      */
     getBlock(id) {
         if (this._blocks.hasOwnProperty(id)) {

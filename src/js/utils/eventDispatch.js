@@ -1,6 +1,12 @@
 _ChartFlows.utils.eventDispatch = {
     availableEvents: [
         /*
+        * called when done initializing
+        * @param {_ChartFlows.api } api
+        */
+        'initialized',
+
+        /*
         * Called on block drag start
         * @param {jQuery} helperEle
         * @param {jQuery} originalEle

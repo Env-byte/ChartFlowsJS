@@ -86,6 +86,7 @@ _ChartFlows.utils.template = function () {
                     if (ChartFlows.config.debug === 1) {
                         console.log('No tags found')
                     }
+                    html = object.template
                 }
             } else {
                 console.error('Object does not have property `template`')

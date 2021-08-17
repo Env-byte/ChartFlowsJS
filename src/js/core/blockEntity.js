@@ -78,7 +78,7 @@ _ChartFlows.classes.blockEntity = class {
             drag: this._hDrag.moveBlock,
             start: (event, ui) => {
                 let arrow = this.getParentArrow();
-                if (arrow instanceof _Symbol) {
+                if (arrow instanceof _ChartFlows.classes._Symbol ) {
                     arrow.hide();
                 }
 

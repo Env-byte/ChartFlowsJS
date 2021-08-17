@@ -53,4 +53,3 @@ _ChartFlows.utils.drop = function () {
         }
     }
 }
-

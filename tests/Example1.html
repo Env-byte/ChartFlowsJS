@@ -17,6 +17,8 @@
 <body>
 <br>
 <br>
+
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-3">
@@ -79,6 +81,7 @@
                 }
             ]
         });
+
         ChartFlows.blockList.add('Process', {
             id: 'Dropbox',
             name: 'Dropbox',
@@ -95,7 +98,25 @@
                 }
             ]
         });
-        /*
+
+        ChartFlows.blockList.add('Decision', {
+            id: 'Decision',
+            name: 'Decision',
+            description: 'Upload a file to Google Drive',
+            icon: '<i class="fab fa-2x fa-dropbox"></i>',
+            data: [
+                {
+                    name: 'test',
+                    value: '123'
+                },
+                {
+                    name: 'db-type',
+                    value: 'external'
+                }
+            ]
+        });
+
+
        ChartFlows.load({
             "tree": [
                 {
@@ -144,7 +165,7 @@
                 }
             ]
         })
-        */
+
 
         /*
         Was working when tested

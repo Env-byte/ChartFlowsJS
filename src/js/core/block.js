@@ -1,4 +1,4 @@
-ChartFlows.addBlock('Base', class {
+_ChartFlows.classes._Block = class {
 
     constructor(id) {
         /**
@@ -6,11 +6,8 @@ ChartFlows.addBlock('Base', class {
          */
         this._hTemplate = undefined;
         this._hDrag = undefined;
-        /**
-         *
-         * @type {BlockInfo}
-         */
-        this.info = undefined;
+
+        this.info = {};
         this.template = undefined;
         this.$ = undefined;
 
@@ -58,11 +55,5 @@ ChartFlows.addBlock('Base', class {
             }
         }
     }
-});
-
-/**
- *
- * @type {_Block}
- * @private
- */
-const _Block = ChartFlows.getBlock('Base');
+}
+ChartFlows.addBlock('Base', _ChartFlows.classes._Block);

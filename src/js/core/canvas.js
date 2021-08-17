@@ -171,7 +171,7 @@ _ChartFlows.classes.canvas = class {
             },
             300,
             () => {
-                if (arrow instanceof _Symbol) {
+                if (arrow instanceof _ChartFlows.classes._Symbol ) {
                     arrow.show();
                 }
             })
