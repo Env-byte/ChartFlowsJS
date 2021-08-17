@@ -12,9 +12,6 @@ _ChartFlows.utils.drop = function () {
          */
         dropHandle: function (event, ui) {
             let canvas = _ChartFlows.utils.statics.getApi().canvas;
-            if (!canvas.element instanceof jQuery) {
-                console.error('Canvas is not a jquery object')
-            }
 
             $block = ui.helper.clone();
             $block.appendTo(canvas.element);

@@ -20,9 +20,6 @@ _ChartFlows.utils.draw = {
      * @param {string} color
      */
     dot: function (x, y, size, color, parent) {
-        if (!parent instanceof jQuery) {
-            parent = $('body');
-        }
         let style = 'width: ' + size + 'px;' +
             'height:' + size + 'px;' +
             'position:absolute;' +
