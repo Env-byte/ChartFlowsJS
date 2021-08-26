@@ -1,6 +1,6 @@
 _ChartFlows.utils.template = function () {
 
-    let expression = new RegExp(/(<\?%[\s]*)([A-z0-9.]+)([\s]*%\?>)/g)
+    let expression = new RegExp(/(<%[\s]*)([A-z0-9.]+)([\s]*%>)/g)
 
     /**
      *
@@ -63,34 +63,32 @@ _ChartFlows.utils.template = function () {
     return {
         /**
          *
+         * @param {string} template
          * @param {_Block} object
          * @returns {string}
          */
-        parse: (object) => {
+        parse: (template, object) => {
             let html = '';
             if (ChartFlows.config.debug === 1) {
                 console.log('Parse', object)
             }
 
-            if (object.hasOwnProperty('template')) {
-                let tags = getTags(object.template);
+            let tags = getTags(template);
+            if (ChartFlows.config.debug === 1) {
+                console.log('Tags', tags)
+            }
+            if (Object.keys(tags).length > 0) {
+                html = replaceTags(createMap(tags, object), template);
                 if (ChartFlows.config.debug === 1) {
-                    console.log('Tags', tags)
-                }
-                if (Object.keys(tags).length > 0) {
-                    html = replaceTags(createMap(tags, object), object.template);
-                    if (ChartFlows.config.debug === 1) {
-                        console.log('Generated HTML', html)
-                    }
-                } else {
-                    if (ChartFlows.config.debug === 1) {
-                        console.log('No tags found')
-                    }
-                    html = object.template
+                    console.log('Generated HTML', html)
                 }
             } else {
-                console.error('Object does not have property `template`')
+                if (ChartFlows.config.debug === 1) {
+                    console.log('No tags found')
+                }
+                html = template
             }
+
 
             return html;
         }

@@ -7,6 +7,8 @@ _ChartFlows.classes._Symbol = class {
         this._id = _ChartFlows.utils.statics.genId()
         this._parent = parent;
         this._$ = $();
+        this.linkedTo = '';
+        this.data = new _ChartFlows.utils.data();
     }
 
     get parent() {
@@ -15,6 +17,10 @@ _ChartFlows.classes._Symbol = class {
 
     get id() {
         return this._id;
+    }
+
+    set id(id) {
+        this._id = id;
     }
 
     show() {
@@ -35,7 +41,19 @@ _ChartFlows.classes._Symbol = class {
     }
 
     remove() {
+        this._$.remove();
+    }
 
+    get $() {
+        return this._$;
+    }
+
+    serialize() {
+        return {
+            id: this._id,
+            data: this.data.serialize(),
+            linkedTo: this.linkedTo
+        }
     }
 }
 ChartFlows.addSymbol('Symbol', _ChartFlows.classes._Symbol);

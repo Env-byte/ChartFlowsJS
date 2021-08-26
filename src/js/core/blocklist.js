@@ -15,7 +15,6 @@ _ChartFlows.classes.blockList = class {
      */
     add(type, blockInfo) {
         let classDef = ChartFlows.getBlock(type);
-        console.log(classDef);
         if (classDef) {
 
             if (!blockInfo.hasOwnProperty('id') || blockInfo.id === '') {

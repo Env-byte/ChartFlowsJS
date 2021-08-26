@@ -2,6 +2,7 @@ _ChartFlows.api = class {
     constructor() {
         this._blocks = {};
         this._symbols = {};
+        this.loading = false;
         this._version = 1.0;
         this._config = new _ChartFlows.config();
         this._canvas = null;
@@ -120,7 +121,7 @@ _ChartFlows.api = class {
         let tree = [];
         this.canvas.blocks.traverse((node) => {
             if (node)
-                tree.push(node.value.serialize());
+                tree.push(node.serialize());
         })
 
         return {
@@ -129,7 +130,6 @@ _ChartFlows.api = class {
     }
 
     load(object) {
-        console.log('Started Load')
         if (!object.hasOwnProperty('tree')) {
             console.error("Object key 'tree' missing");
             return;
@@ -143,59 +143,132 @@ _ChartFlows.api = class {
         //todo clear canvas
 
         let blockTemplates = this._blockList.blocks;
-        let nodes = {}, node, parent, treeVal, $template;
-        let remapIDs = {}
+        let nodes = {}, node, parent, treeVal;
 
-        for (let i = 0, iL = object.tree.length; i < iL; i++) {
-            treeVal = object.tree[i];
-            parent = [];
-
-            if (!treeVal.hasOwnProperty('_instanceOf')) {
-                console.error("Object key '_instanceOf' missing for block");
-                return;
-            }
-            if (!blockTemplates.hasOwnProperty(treeVal._instanceOf)) {
-                console.error("Cannot create a block from the template" + treeVal._instanceOf);
-                return;
-            }
-            if (typeof treeVal.parentID === "string") {
-                if (!nodes.hasOwnProperty(treeVal.parentID)) {
-                    console.error("Cannot find parent node with id: " + treeVal.parentID);
-                    return;
-                }
-
-                parent = nodes[treeVal.parentID];
-            }
-
-            $template = blockTemplates[treeVal._instanceOf].$.clone().detach();
-            this._canvas.element.append($template);
-            $template.removeClass('can-drop')
-            $template.css('position', 'absolute')
-
-            node = this._canvas.addBlockEntity($template, blockTemplates[treeVal._instanceOf], parent);
-            if (node) {
-                node.value.setPos(treeVal.left, treeVal.top);
-                remapIDs[node.id] = treeVal.id;
-                //set the node id and the block entity id
-                node.id = treeVal.id;
-                node.value.id = treeVal.id;
+        let tree = this._canvas.blocks;
+        if (tree instanceof _ChartFlows.utils.tree) {
+            let node = tree.search(this.config.startNodeID)
+            if (node instanceof _ChartFlows.utils.treeNode) {
                 nodes[node.id] = node;
-            }
-
-            if (parent instanceof _ChartFlows.utils.treeNode) {
-                parent.repositionChildren()
-                parent.rebuildNodeLinks();
             }
         }
 
+        for (let i = 0, iL = object.tree.length; i < iL; i++) {
+            treeVal = object.tree[i];
+            if (treeVal.block.id === 'Entity_StartNode') {
+                //skip over start node if exists
+                continue;
+            }
+            parent = [];
+            if (!treeVal.block.hasOwnProperty('_instanceOf')) {
+                console.error("Object key '_instanceOf' missing for block");
+                return;
+            }
+            if (!blockTemplates.hasOwnProperty(treeVal.block._instanceOf)) {
+                console.error("Cannot create a block from the template" + treeVal.block._instanceOf);
+                return;
+            }
+            if (typeof treeVal.block.parentID === "string") {
+                if (!nodes.hasOwnProperty(treeVal.block.parentID)) {
+                    console.error("Cannot find parent node with id: " + treeVal.block.parentID);
+                    return;
+                }
+                parent = nodes[treeVal.block.parentID];
+            }
+
+            node = this.addToCanvas(blockTemplates[treeVal.block._instanceOf], parent, {
+                left: treeVal.block.left,
+                top: treeVal.block.top,
+                id: treeVal.block.id,
+                data: treeVal.block.info.data
+            });
+            nodes[node.id] = node;
+        }
+
+        // traverse all nodes and set data
+
         this.canvas.blocks.traverse(node => {
-            if (node) {
-                if (remapIDs.hasOwnProperty(node.value.parentID)) {
-                    node.value.parentID = remapIDs[node.value.parentID];
+            // get this nodes parent
+            // check if the symbols is linked to this node
+            for (let i = 0, iL = object.tree.length; i < iL; i++) {
+                let treeVal = object.tree[i];
+
+                if (treeVal.block.id !== node.id) {
+                    continue;
+                }
+
+                for (let i = 0, iL = treeVal['symbols'].length; i < iL; i++) {
+                    let symbol = treeVal['symbols'][i];
+
+                    for (let x = 0, xL = node.symbols.length; x < xL; x++) {
+                        console.log('linkedTo', node.symbols[x].linkedTo === symbol.linkedTo);
+                        if (node.symbols[x].linkedTo === symbol.linkedTo) {
+                            node.symbols[x].id = symbol.id;
+                            for (let n = 0, nL = symbol.data.length; n < nL; n++) {
+                                node.symbols[x].data.add(symbol.data[n].name, symbol.data[n].value);
+                            }
+                        }
+
+                        console.log('symbol', symbol);
+                        console.log('parentNode.symbols[i]', node.symbols[i]);
+                    }
                 }
             }
         })
 
-        console.log('Finished Load')
+    }
+
+    /**
+     *
+     * @param {_ChartFlows.classes._Block} instanceOf
+     * @param {jQuery[] | _ChartFlows.utils.treeNode} parent
+     * @param {{}} options
+     */
+    addToCanvas(instanceOf, parent, options) {
+        this.loading = true;
+
+        let $template = instanceOf.$.clone().detach();
+        this._canvas.element.append($template);
+        $template.removeClass('can-drop')
+        $template.css('position', 'absolute')
+
+        let node = this._canvas.addBlockEntity($template, instanceOf, parent);
+        if (node) {
+            if (options.hasOwnProperty('left') && options.hasOwnProperty('top')) {
+                node.value.setPos(options.left, options.top);
+            }
+            let originalID = node.id;
+            if (options.hasOwnProperty('id')) {
+                // need to get parent and change the linkedTo id on the arrow symbol
+                node.id = options.id;
+                node.value.id = options.id;
+            }
+            if (options.hasOwnProperty('data') && options.data.length) {
+                for (let i = 0, iL = options.data.length; i < iL; i++) {
+                    node.value.data.add(options.data[i].name, options.data[i].value);
+                }
+            }
+            if (parent instanceof _ChartFlows.utils.treeNode) {
+                parent.repositionChildren()
+                parent.rebuildNodeLinks();
+            }
+            console.log('originalID', originalID)
+            console.log('node.id', node.id)
+            if (originalID !== node.id) {
+                // change the id of the symbol
+                let parentNode = this.canvas.blocks.getParent(node.id);
+                if (parentNode) {
+                    for (let i = 0, iL = parentNode.symbols.length; i < iL; i++) {
+                        if (parentNode.symbols[i].linkedTo === originalID) {
+                            parentNode.symbols[i].linkedTo = node.id;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        this.loading = false;
+        return node;
     }
 }

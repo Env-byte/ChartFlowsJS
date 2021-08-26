@@ -8,7 +8,8 @@ _ChartFlows.classes._Block = class {
         this._hDrag = undefined;
 
         this.info = {};
-        this.template = undefined;
+        this.cavasTemplate = undefined;
+        this.listTemplate = undefined
         this.$ = undefined;
 
         this.id = id;
@@ -26,13 +27,30 @@ _ChartFlows.classes._Block = class {
         this._hTemplate = _ChartFlows.utils.template();
         this._hDrag = _ChartFlows.utils.drag(this.id);
 
-        this.template = ChartFlows.config.getTemplate(this.type);
+        this.listTemplate = ChartFlows.config.getTemplate('ListTemplate');
 
-        this.$ = $(this._hTemplate.parse(this, this.template)).appendTo($blockList);
+        this.cavasTemplate = ChartFlows.config.getTemplate(this.type);
+
+        let html = this._hTemplate.parse(this.listTemplate, this);
+        console.log('html', html);
+        this.$ = $(html).appendTo($blockList);
+
         this.$.attr('id', this.id);
         this.$.addClass('ui-widget-content').addClass('block-item').addClass('can-drop');
         this._addDataAttr();
 
+        if (this.info.hasOwnProperty('hidden') && this.info.hidden) {
+            this.$.hide();
+        } else {
+            this._setDraggable();
+        }
+    }
+
+    /**
+     *
+     * @private
+     */
+    _setDraggable() {
         this.$.draggable({
             helper: "clone",
             snap: '.snapIndicator',
@@ -42,6 +60,14 @@ _ChartFlows.classes._Block = class {
             start: this._hDrag.startHandle,
             stop: this._hDrag.endHandle,
         })
+    }
+
+    /**
+     *
+     * @return {html}
+     */
+    getCanvasHtml() {
+        return this._hTemplate.parse(this.cavasTemplate, this)
     }
 
     /**

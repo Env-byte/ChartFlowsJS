@@ -38,11 +38,11 @@ _ChartFlows.classes.canvas = class {
     /**
      *
      * @param {jQuery} $block
-     * @param {_Block} blockObj
-     * @param {jQuery[] | _ChartFlows.utils.treeNode} snapped
+     * @param {_ChartFlows.classes._Block} instanceOf
+     * @param {_ChartFlows.utils.treeNode|false} snapped
      * @return { _ChartFlows.utils.treeNode|boolean}
      */
-    addBlockEntity($block, blockObj, snapped) {
+    addBlockEntity($block, instanceOf, snapped) {
         let blockCount = 0;
         this._blocks.traverse(function (node) {
             if (node) {
@@ -52,25 +52,17 @@ _ChartFlows.classes.canvas = class {
 
         let parent = 'root';
         let parentNode = false;
+
         if (blockCount === 0) {
+
             parent = 'root';
+
         } else {
-            console.log('snapped', snapped)
-            if (snapped) {
-                if (snapped instanceof _ChartFlows.utils.treeNode) {
-                    parentNode = snapped;
-                } else if (snapped.length > 0) {
-                    parentNode = this.getBlockEntityNode(snapped[0]);
-                    if (parentNode === false) {
-                        console.error('Could not find parent');
-                        $block.remove();
-                        return false;
-                    }
-                } else {
-                    console.error('No Snap but more than one block');
-                    $block.remove();
-                    return false;
-                }
+            if (ChartFlows.config.debug === 1) {
+                console.log('snappedTo', snapped)
+            }
+            if (snapped && snapped instanceof _ChartFlows.utils.treeNode) {
+                parentNode = snapped;
                 parent = parentNode.id;
             } else {
                 // need to cancel drag if there is no snap
@@ -80,17 +72,33 @@ _ChartFlows.classes.canvas = class {
             }
         }
 
+        //replace $block with the canvas template from the class the block is instanced from
+
+        let $parent = $block.parent();
+
+        let left = $block.css('left');
+        let top = $block.css('top');
+        $block.remove();
+
+        let $canvasBlock = $(instanceOf.getCanvasHtml());
+        $parent.append($canvasBlock);
+        $canvasBlock.addClass('block-item');
+
         //setup class
-        let newBlock = new this._itemClass($block);
-        newBlock.info = $.extend(true, {}, blockObj.info);
-        newBlock.instanceOf = blockObj.id;
-        newBlock.setPos($block.css('left'), $block.css('top'));
+        let newBlock = new this._itemClass($canvasBlock);
+        newBlock.info = $.extend(true, {}, instanceOf.info);
+        newBlock.instanceOf = instanceOf.id;
+        newBlock.setPos(left, top);
+        newBlock.type = instanceOf.type;
+        _ChartFlows.utils.eventDispatch.fire('createdblockentity', newBlock, instanceOf)
 
-        let result = _ChartFlows.utils.eventDispatch.fire('blocksnap', newBlock, parentNode.value || false)
-
-        if (result === false) {
-            newBlock.$.remove();
-            return false;
+        let result;
+        if (_ChartFlows.utils.statics.getApi().loading === false) {
+            result = _ChartFlows.utils.eventDispatch.fire('blocksnap', newBlock, parentNode || false)
+            if (result === false) {
+                newBlock.$.remove();
+                return false;
+            }
         }
 
         let node = new _ChartFlows.utils.treeNode(newBlock, []);
@@ -98,6 +106,10 @@ _ChartFlows.classes.canvas = class {
         if (parentNode && parentNode instanceof _ChartFlows.utils.treeNode) {
             //reposition block using the spacing from config;
             this._BuildLinks(parentNode, node)
+        }
+
+        if (_ChartFlows.utils.statics.getApi().loading === false) {
+            _ChartFlows.utils.eventDispatch.fire('afterblocksnap', newBlock, parentNode || false)
         }
 
         return node;
@@ -130,6 +142,8 @@ _ChartFlows.classes.canvas = class {
 
         this._BuildLinks(parentNode, node)
         _ChartFlows.utils.eventDispatch.fire('blockreparent', blockEntity, parentNode.value)
+        _ChartFlows.utils.eventDispatch.fire('afterblocksnap', blockEntity, parentNode || false)
+
     }
 
     /**
@@ -142,18 +156,44 @@ _ChartFlows.classes.canvas = class {
         return this._blocks.search(id);
     }
 
+    removeBlockEntity(id) {
+        let node = this._blocks.search(id);
+        let parentID = node.value.parentID;
+        let nodesRemoved = this._blocks.removeNode(id);
+
+        for (let key in nodesRemoved) {
+            if (nodesRemoved.hasOwnProperty(key) && nodesRemoved[key] instanceof _ChartFlows.utils.treeNode) {
+                //remove arrows and block html
+                nodesRemoved[key].remove()
+            } else {
+                console.error('Error node is not instance of treeNode', nodesRemoved[key])
+            }
+        }
+
+        if (parentID !== null) {
+            let parentNode = this._blocks.search(node.value.parentID);
+            //rebuild parent node links
+            if (parentNode) {
+                this._BuildLinks(parentNode, false);
+            }
+        }
+        return nodesRemoved;
+    }
+
     /**
      *
      * @param {_ChartFlows.utils.treeNode} parentNode
-     * @param {_ChartFlows.utils.treeNode} node
+     * @param {_ChartFlows.utils.treeNode|boolean} node
      * @private
      */
     _BuildLinks(parentNode, node) {
         //reattach to tree reposition then build arrows.
         parentNode.repositionChildren()
         parentNode.rebuildNodeLinks();
-        node.value.parentID = parentNode.value.id;
-        node.value.reparent(parentNode.value.$);
+        if (node && node instanceof _ChartFlows.utils.treeNode) {
+            node.value.parentID = parentNode.value.id;
+            node.value.reparent(parentNode.value.$);
+        }
     }
 
     /**
@@ -171,7 +211,7 @@ _ChartFlows.classes.canvas = class {
             },
             300,
             () => {
-                if (arrow instanceof _ChartFlows.classes._Symbol ) {
+                if (arrow instanceof _ChartFlows.classes._Symbol) {
                     arrow.show();
                 }
             })

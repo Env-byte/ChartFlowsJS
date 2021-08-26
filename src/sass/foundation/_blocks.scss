@@ -5,6 +5,7 @@ $block-type-colors: (
 );
 .block-item.can-drop {
   box-shadow: 1px 1px 30px rgb(22 33 74 / 0%);
+
   &:hover {
     box-shadow: 0 4px 4px rgb(0 0 0 / 56%);
   }
@@ -18,12 +19,17 @@ $block-type-colors: (
   box-sizing: border-box;
   z-index: 122 !important;
   min-height: 60px;
+  background: white;
 
   &:hover {
     border-radius: 5px;
     background-color: #FFF;
     cursor: pointer;
   }
+}
+
+.block-item p {
+  margin: 0;
 }
 
 .block-item.start {
@@ -58,15 +64,24 @@ $decision-node-size: 70px;
   width: $decision-node-size;
   border: 1px solid #28a745;
   position: absolute;
-  top: 150px;
-  left: 150px
+  top: 14px;
+  left: 14px;
+}
+
+.block-item:not(.decision-wrapper) {
+  min-width: 280px;
+}
+
+.decision-wrapper {
+  height: 100px;
+  width: 100px;
 }
 
 .decision-node-inner {
-  color: #333;
-  display: table-cell;
-  height: $decision-node-size;
+  height: 115%;
+  width: 115%;
   transform: rotate(-45deg);
-  vertical-align: middle;
-  width: $decision-node-size;
+  top: 0;
+  left: 0;
+  position: absolute;
 }

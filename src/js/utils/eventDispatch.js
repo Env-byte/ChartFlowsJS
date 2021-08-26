@@ -31,6 +31,7 @@ _ChartFlows.utils.eventDispatch = {
          * called when a new block is dropped onto the canvas
          * @param {eventData} event
          * @param {_Block} block
+         * @param {_ChartFlows.utils.treeNode|false} parentNode
          * return false to prevent drop
          */
         'drop', //done
@@ -50,15 +51,42 @@ _ChartFlows.utils.eventDispatch = {
         'blockreparent', //done
 
         /*
-         *  before the block gets added to canvas / re-parented
-         *
+         * Before the block gets parented
+         * Does not run during load
          * return false to prevent snap
          * @param {_ChartFlows.classes.blockEntity} block
-         * @param {_ChartFlows.classes.blockEntity|null} parent
+         * @param {_ChartFlows.utils.treeNode|null} parent
          *
          * return false to prevent
          */
         'blocksnap', //done
+
+        /*
+         * After the block gets parented
+         * Does not run during load
+         * return false to prevent snap
+         * @param {_ChartFlows.classes.blockEntity} block
+         * @param {_ChartFlows.utils.treeNode|null} parent
+         *
+         */
+        'afterblocksnap', //done
+
+        /*
+         *  when a new block entity is created, immediately after its _init() function is called
+         *
+         * return false to prevent snap
+         * @param {_ChartFlows.classes.blockEntity} block
+         * @param {_ChartFlows.classes._Block} instanceOf
+         *
+         */
+        'createdblockentity', //done
+
+        /*
+         * when the arrows links are built
+         * @param {_ChartFlows.utils.treeNode } node
+         *
+         */
+        'buildlinks', //done
     ],
 
     /**
@@ -70,11 +98,16 @@ _ChartFlows.utils.eventDispatch = {
     fire: function (event, ...params) {
         if (ChartFlows.events.hasOwnProperty(event)) {
             if (ChartFlows.events[event]) {
+                let result
                 for (let i = 0, iL = ChartFlows.events[event].length; i < iL; i++) {
                     if (typeof ChartFlows.events[event][i] === "function") {
-                        return ChartFlows.events[event][i](...params);
+                        result = ChartFlows.events[event][i](...params);
                     }
                 }
+                // return the result of the last event
+                // ignore the result of the events fired before it
+                // only applies if multiple callbacks bound to one event
+                return result;
             }
         }
     }

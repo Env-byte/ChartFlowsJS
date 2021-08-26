@@ -1,6 +1,4 @@
 _ChartFlows.classes.blockEntity = class {
-
-
     /**
      *
      * @param  $ele
@@ -18,23 +16,45 @@ _ChartFlows.classes.blockEntity = class {
         this.$ = $ele;
         this._parentID = null;
         this._init();
-        this.info = {};
+        this.type = '';
+        this._info = {};
+        this.data = new _ChartFlows.utils.data();
         this._pos = {
             left: '0px',
             top: '0px'
         }
+
+        this.node = null;
+
         /**
          *
          * @type {string }
          * @private
          */
         this._parentArrowID = 'null';
+
+    }
+
+    set info(info) {
+        this._info = info;
+        if (info.hasOwnProperty('data') && info.data.length) {
+            this.data = new _ChartFlows.utils.data(info.data);
+            delete this._info['data'];
+        }
+    }
+
+    get info() {
+        return this._info;
     }
 
     set instanceOf(id) {
         this._instanceOf = id;
+        this._createSnapIndicator();
     }
 
+    get instanceOf() {
+        return this._instanceOf;
+    }
 
     /**
      *
@@ -65,7 +85,7 @@ _ChartFlows.classes.blockEntity = class {
         this.$.attr('id', this._id);
         this.$.removeClass('can-drop');
 
-        this._createSnapIndicator();
+        //this._createSnapIndicator();
         this._hDrag = _ChartFlows.utils.drag(this._id);
 
         let api = _ChartFlows.utils.statics.getApi();
@@ -78,7 +98,7 @@ _ChartFlows.classes.blockEntity = class {
             drag: this._hDrag.moveBlock,
             start: (event, ui) => {
                 let arrow = this.getParentArrow();
-                if (arrow instanceof _ChartFlows.classes._Symbol ) {
+                if (arrow instanceof _ChartFlows.classes._Symbol) {
                     arrow.hide();
                 }
 
@@ -92,17 +112,20 @@ _ChartFlows.classes.blockEntity = class {
         })
     }
 
-    reparent(parent) {
-        this.$.detach().appendTo(parent);
+    reparent($parent) {
+        if ($parent.find('.start-node-inner').length > 0) {
+            $parent = $parent.find('.start-node-inner');
+        }
+        this.$.detach().appendTo($parent);
     }
 
     _createSnapIndicator() {
-        let width = this.$.width();
-        let left = (width / 2) - 6 // -6 as the indicator has width of 12 (in the scss file)
-        let style = 'left:' + left + 'px;bottom:-6px;visibility:hidden';
-
+        this.$.find('.snapIndicator').remove();
+        let style = 'left:' + ((this.$.width() / 2) - 5) + 'px;bottom:-6px;';
+        style += 'visibility:hidden;';
         let indicator = $('<div style="' + style + '" class="snapIndicator ' + this._id + '"></div>');
         this.$.append(indicator);
+
     }
 
     /**
@@ -119,6 +142,7 @@ _ChartFlows.classes.blockEntity = class {
      * @param {string|boolean} top
      */
     setPos(left, top) {
+        this.$.css('position', 'absolute');
         if (top) {
             this.$.css('top', top);
             this._pos.top = top;
@@ -153,17 +177,19 @@ _ChartFlows.classes.blockEntity = class {
         this._id = id;
         this.$.attr('id', id);
         this._hDrag.updateRootID(id);
+
     }
 
     serialize() {
+        let info = $.extend(true, {}, this._info);
+        info.data = this.data.serialize()
         return {
             id: this._id,
             left: this._pos.left,
             top: this._pos.top,
-            info: this.info,
+            info: info,
             parentID: this._parentID,
             _instanceOf: this._instanceOf
         }
-
     }
 }

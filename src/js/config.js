@@ -2,7 +2,7 @@ let _ChartFlows = {
     config: undefined,
     api: undefined,
     utils: {},
-    classes: {}
+    classes: {},
 }
 _ChartFlows.config = class {
     get blockSpacing() {
@@ -24,6 +24,8 @@ _ChartFlows.config = class {
         this._snapTolerance = 30;
         this._blockSpacing = 80;
         this.showStart = true;
+        //give start node a static id
+        this.startNodeID = 'Entity_StartNode';
     }
 
     /**

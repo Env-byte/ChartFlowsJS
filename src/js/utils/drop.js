@@ -34,18 +34,21 @@ _ChartFlows.utils.drop = function () {
 
             if ($block.hasClass('can-drop')) {
                 let blockObj = _ChartFlows.utils.statics.getBlock($block);
-                if (blockObj) {
+                if (blockObj instanceof _ChartFlows.classes._Block) {
                     // new block dragged on to canvas
-                    let result = _ChartFlows.utils.eventDispatch.fire('drop', event, blockObj);
-
-                    if (result === false) {
-                        $block.remove();
-                        return;
-                    }
                     let snapped = _ChartFlows.utils.statics.getSnappedElements(blockObj.$, $block);
-                    canvas.addBlockEntity($block, blockObj, snapped);
+                    if (snapped && snapped.length && snapped.length > 0) {
+                        let parentNode = _ChartFlows.utils.statics.getApi().canvas.getBlockEntityNode(snapped[0]);
+                        let result = _ChartFlows.utils.eventDispatch.fire('drop', event, blockObj, parentNode);
+                        if (result === false) {
+                            $block.remove();
+                            return;
+                        }
+                        canvas.addBlockEntity($block, blockObj, parentNode);
+                    } else {
+                        $block.remove();
+                    }
                 }
-
             }
         }
     }
