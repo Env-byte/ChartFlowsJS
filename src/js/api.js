@@ -201,7 +201,7 @@ _ChartFlows.api = class {
                     let symbol = treeVal['symbols'][i];
 
                     for (let x = 0, xL = node.symbols.length; x < xL; x++) {
-                        console.log('linkedTo', node.symbols[x].linkedTo === symbol.linkedTo);
+                        //console.log('linkedTo', node.symbols[x].linkedTo === symbol.linkedTo);
                         if (node.symbols[x].linkedTo === symbol.linkedTo) {
                             node.symbols[x].id = symbol.id;
                             for (let n = 0, nL = symbol.data.length; n < nL; n++) {
@@ -209,8 +209,8 @@ _ChartFlows.api = class {
                             }
                         }
 
-                        console.log('symbol', symbol);
-                        console.log('parentNode.symbols[i]', node.symbols[i]);
+                        //console.log('symbol', symbol);
+                        // console.log('parentNode.symbols[i]', node.symbols[i]);
                     }
                 }
             }
@@ -252,8 +252,8 @@ _ChartFlows.api = class {
                 parent.repositionChildren()
                 parent.rebuildNodeLinks();
             }
-            console.log('originalID', originalID)
-            console.log('node.id', node.id)
+            //console.log('originalID', originalID)
+            //console.log('node.id', node.id)
             if (originalID !== node.id) {
                 // change the id of the symbol
                 let parentNode = this.canvas.blocks.getParent(node.id);

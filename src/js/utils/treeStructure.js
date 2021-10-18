@@ -9,21 +9,19 @@ _ChartFlows.utils.tree = class {
 
     /**
      *
-     * @param {function(_ChartFlows.utils.treeNode|boolean)} callback
+     * @param {function(_ChartFlows.utils.treeNode, number)} callback
      */
     traverse(callback) {
-        function goThrough(node) {
+        function goThrough(node, level) {
             if (node instanceof _ChartFlows.utils.treeNode) {
-                callback(node);
+                callback(node, level);
                 node.children.forEach((child) => {
-                    goThrough(child);
+                    goThrough(child, level + 1);
                 });
-            } else {
-                callback(false);
             }
         }
 
-        goThrough(this._root);
+        goThrough(this._root, 0);
     }
 
     /**
@@ -135,9 +133,55 @@ _ChartFlows.utils.tree = class {
     get root() {
         return this._root;
     }
+
+    adjustTreeWidth() {
+        let rows = [];
+        this.traverse((node, level) => {
+            if (!rows[level]) {
+                rows[level] = {width: 0, nodes: []};
+            }
+            rows[level].width += node.value.$.width();
+            rows[level].nodes.push(node);
+        })
+        //dont iterate over 0, stop just before
+        for (let i = rows.length - 1, iL = 1; i > iL; i--) {
+            let thisRow = rows[i];
+            if (rows.hasOwnProperty(i - 1)) {
+                let parentRow = rows[i - 1];
+                console.log('diff', thisRow.width > parentRow.width)
+                if (thisRow.width > parentRow.width) {
+                    let diff = parentRow.width - thisRow.width;
+                    let offset = (diff / parentRow.nodes.length) / 4;
+                    for (let key in parentRow.nodes) {
+                        if (parentRow.nodes.hasOwnProperty(key)) {
+
+                            let pos = parentRow.nodes[key].value.pos;
+                            if (isNaN(pos.left)) {
+                                let left = parentRow.nodes[key].value.$.css('left').replace('px', '');
+                                pos.left = parseInt(left);
+                            }
+                            if (pos.left < 0) {
+                                parentRow.nodes[key].value.setPos((pos.left + offset) + 'px', false);
+                            } else {
+                                parentRow.nodes[key].value.setPos((pos.left - offset) + 'px', false);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        this.traverse((node) => {
+            node.rebuildNodeLinks();
+        })
+
+    }
 }
 
-_ChartFlows.utils.treeNode = class {
+_ChartFlows
+    .utils
+    .treeNode = class {
 
     /**
      *
@@ -159,8 +203,8 @@ _ChartFlows.utils.treeNode = class {
     repositionChildren() {
 
         let child;
-
-        let top = this.value.$.height() + _ChartFlows.utils.statics.getApi().config.blockSpacing;
+        let api = _ChartFlows.utils.statics.getApi();
+        let top = this.value.$.height() + api.config.blockSpacing;
 
         if (this.children.length === 0) {
             return;
@@ -177,8 +221,6 @@ _ChartFlows.utils.treeNode = class {
             if (offset > 0) {
                 offset = (offset / 2)
             }
-            console.log('offset', offset)
-
             child.value.setPos('0px', top + 'px');
             child.value.$.css('margin-left', offset + 'px');
         } else {
@@ -212,8 +254,9 @@ _ChartFlows.utils.treeNode = class {
                 child.value.setPos(left + 'px', top + 'px');
                 child.value.$.css('margin-left', offset + 'px');
             }
-
         }
+
+        api.canvas.blocks.adjustTreeWidth();
     }
 
     rebuildNodeLinks() {
