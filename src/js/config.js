@@ -5,14 +5,6 @@ let _ChartFlows = {
     classes: {},
 }
 _ChartFlows.config = class {
-    get blockSpacing() {
-        return this._blockSpacing;
-    }
-
-    set blockSpacing(value) {
-        this._blockSpacing = value;
-    }
-
     constructor() {
         this._debug = 0;
         /**
@@ -23,6 +15,7 @@ _ChartFlows.config = class {
         this._templates = {};
         this._snapTolerance = 30;
         this._blockSpacing = 80;
+        this._disableDrag = false;
         this.showStart = true;
         //give start node a static id
         this.startNodeID = 'Entity_StartNode';
@@ -82,4 +75,21 @@ _ChartFlows.config = class {
             return '';
         }
     }
+
+    get disableDrag() {
+        return this._disableDrag;
+    }
+
+    set disableDrag(value) {
+        this._disableDrag = value;
+    }
+
+    get blockSpacing() {
+        return this._blockSpacing;
+    }
+
+    set blockSpacing(value) {
+        this._blockSpacing = value;
+    }
+
 }

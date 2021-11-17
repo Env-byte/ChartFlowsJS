@@ -18,6 +18,7 @@ _ChartFlows.classes.blockEntity = class {
         this._init();
         this.type = '';
         this._info = {};
+        this._hDrag = null;
         this.data = new _ChartFlows.utils.data();
         this._pos = {
             left: '0px',
@@ -86,27 +87,27 @@ _ChartFlows.classes.blockEntity = class {
         this.$.removeClass('can-drop');
 
         //this._createSnapIndicator();
-        this._hDrag = _ChartFlows.utils.drag(this._id);
-
         let api = _ChartFlows.utils.statics.getApi();
-        this.$.draggable({
-            containment: api.canvas.element,
-            handle: this.$.find('.container-fluid'),
-            snap: '.snapIndicator:not(.' + this._id + ')', // create an indicator to snap to, then draw arrow from this block to the next
-            snapMode: 'outer',
-            snapTolerance: api.config.snapTolerance,
-            drag: this._hDrag.moveBlock,
-            start: (event, ui) => {
-                let arrow = this.getParentArrow();
-                if (arrow instanceof _ChartFlows.classes._Symbol) {
-                    arrow.hide();
-                }
+        if (!_ChartFlows.utils.statics.getApi().config.disableDrag) {
+            this._hDrag = _ChartFlows.utils.drag(this._id);
+            this.$.draggable({
+                containment: api.canvas.element,
+                handle: this.$.find('.container-fluid'),
+                snap: '.snapIndicator:not(.' + this._id + ')', // create an indicator to snap to, then draw arrow from this block to the next
+                snapMode: 'outer',
+                snapTolerance: api.config.snapTolerance,
+                drag: this._hDrag.moveBlock,
+                start: (event, ui) => {
+                    let arrow = this.getParentArrow();
+                    if (arrow instanceof _ChartFlows.classes._Symbol) {
+                        arrow.hide();
+                    }
 
-                this._hDrag.startHandle(event, ui)
-            },
-            stop: this._hDrag.endHandle,
-        })
-
+                    this._hDrag.startHandle(event, ui)
+                },
+                stop: this._hDrag.endHandle,
+            })
+        }
         this.$.on('click', (e) => {
             e.stopPropagation();
             e.preventDefault();
@@ -123,7 +124,7 @@ _ChartFlows.classes.blockEntity = class {
 
     _createSnapIndicator() {
         this.$.find('.snapIndicator').remove();
-        let style = 'left:' + ((this.$.width() / 2) - 5) + 'px;bottom:-6px;';
+        let style = 'left:' + ((this.$.width() / 2) - 15) + 'px;bottom:-6px;';
         style += 'visibility:hidden;';
         let indicator = $('<div style="' + style + '" class="snapIndicator ' + this._id + '"></div>');
         this.$.append(indicator);
@@ -178,8 +179,9 @@ _ChartFlows.classes.blockEntity = class {
     set id(id) {
         this._id = id;
         this.$.attr('id', id);
-        this._hDrag.updateRootID(id);
-
+        if (this._hDrag) {
+            this._hDrag.updateRootID(id);
+        }
     }
 
     serialize() {

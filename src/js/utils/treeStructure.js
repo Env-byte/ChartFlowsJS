@@ -148,7 +148,6 @@ _ChartFlows.utils.tree = class {
             let thisRow = rows[i];
             if (rows.hasOwnProperty(i - 1)) {
                 let parentRow = rows[i - 1];
-                console.log('diff', thisRow.width > parentRow.width)
                 if (thisRow.width > parentRow.width) {
                     let diff = parentRow.width - thisRow.width;
                     let offset = (diff / parentRow.nodes.length) / 4;
@@ -216,47 +215,63 @@ _ChartFlows
             if (this.value.$.width() > child.value.$.width()) {
                 offset = this.value.$.width() - child.value.$.width();
             } else if (this.value.$.width() < child.value.$.width()) {
-                offset = this.value.$.width() - child.value.$.width();
+                offset = -this.value.$.width();
             }
+
             if (offset > 0) {
                 offset = (offset / 2)
             }
             child.value.setPos('0px', top + 'px');
             child.value.$.css('margin-left', offset + 'px');
         } else {
+            // todo need to work on this
             // set start to middle of the parent node
             let leftStart = this.value.$.width() / 2;
 
-            //iterate over all the children and get the highest width block
+            //iterate over all the children and get the largest width block
+            // do this because all blocks should be equally spaced
+            let rowWidth = 20;
             let maxWidth = 0;
             for (let i = 0, iL = this.children.length; i < iL; i++) {
                 child = this.children[i];
-                if (child.value.$.width() > maxWidth) {
-                    maxWidth = child.value.$.width();
+                //rowWidth += child.value.$.width() + 20;
+                if (maxWidth < child.value.$.width()) {
+                    maxWidth = child.value.$.width()
                 }
             }
 
             //offset the start to center the child block under this block
             //this assumes all blocks are the same width
-            leftStart = leftStart - (maxWidth * this.children.length * .5) - ((this.children.length - 1) * 10);
+            //leftStart = leftStart - (maxWidth * this.children.length * .5) - ((this.children.length - 1) * 10);
+
+            let offset = 0;
+            rowWidth += (this.children.length * (20 + maxWidth));
+            let left = rowWidth / -2;
 
             for (let i = 0, iL = this.children.length; i < iL; i++) {
                 child = this.children[i];
 
-                let offset = 0;
-                if (maxWidth > child.value.$.width()) {
-                    offset = (maxWidth - child.value.$.width()) / 2;
+                if (this.value.$.width() == child.value.$.width()) {
+                    offset = leftStart;
+                } else {
+                    offset = leftStart;
                 }
 
-                // 20 margin between each one
-                let left = leftStart + (i * (maxWidth + 20));
+                child.value.setPos((left + offset) + 'px', top + 'px');
 
-                child.value.setPos(left + 'px', top + 'px');
-                child.value.$.css('margin-left', offset + 'px');
+                if (i > 0) {
+                    //if there is an odd number of nodes dont add margin to middle one
+                    // if (!(this.children.length % 2 !== 0 && Math.ceil(this.children.length / 2) === i)) {
+                    child.value.$.css('margin-left', 20 + 'px');
+                    //}
+                } else {
+                    child.value.$.css('margin-left', 20 + 'px');
+                }
+                left += maxWidth + 20;
             }
         }
-
-        api.canvas.blocks.adjustTreeWidth();
+        //bug with and decision
+        //api.canvas.blocks.adjustTreeWidth();
     }
 
     rebuildNodeLinks() {

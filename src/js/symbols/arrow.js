@@ -37,14 +37,23 @@ _ChartFlows.classes._Arrow = class extends _ChartFlows.classes._Symbol {
         let startMidPoint = startBlock.$.width() / 2 - 20;
         let html, left, line1 = '', line2 = '', line3 = '', distance = 20;
 
+        //  x = x + 10;
+
+        let top = (startBlock.$.height());
+
+        //first block attached to start has an x of -10
+        if (x === -10) {
+            x = 0;
+        }
         if (x === 0) {
             // arrow is going straight down
             line1 = '<line x1="20" y1="0" x2="20" y2="' + (y - 10) + '" class="arrowLine marker" marker-end="url(#arrow)"/>'
             left = startMidPoint;
         } else if (x > 0) {
+            x = x - 10;
             // arrow is going right
             let right = x + (endBlock.$.width() / 2);
-            distance = right - startMidPoint;
+            distance = right - startMidPoint + 20;
 
             line1 = '<line x1="20" y1="0" x2="20" y2="' + (y / 2) + '" class="arrowLine"/>'
             line2 = '<line x1="20" y1="' + (y / 2) + '" x2="' + distance + '" y2="' + (y / 2) + '" class="arrowLine"/>'
@@ -53,7 +62,7 @@ _ChartFlows.classes._Arrow = class extends _ChartFlows.classes._Symbol {
             left = startMidPoint;
         } else {
             // arrow is going left
-            left = x + (endBlock.$.width() / 2) - 20;
+            left = x + (endBlock.$.width() / 2);
 
             //+ 20 because of element padding, else it wont be in the middle of the end block
             distance = startMidPoint - left + 20;
@@ -72,8 +81,6 @@ _ChartFlows.classes._Arrow = class extends _ChartFlows.classes._Symbol {
             '</div>';
 
         let $node = $(html);
-        let top = (startBlock.$.height());
-
         startBlock.$.append($node);
 
         $node

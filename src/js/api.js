@@ -60,7 +60,7 @@ _ChartFlows.api = class {
     /**
      *
      * @param {jQuery} container
-     * @param {jQuery} blockList
+     * @param {jQuery|boolean} blockList Pass false to not use the block list
      */
     init(container, blockList) {
         if (this.config.debug === 1) {

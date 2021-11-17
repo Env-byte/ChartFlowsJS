@@ -32,17 +32,24 @@ _ChartFlows.classes._Block = class {
         this.cavasTemplate = ChartFlows.config.getTemplate(this.type);
 
         let html = this._hTemplate.parse(this.listTemplate, this);
-        console.log('html', html);
-        this.$ = $(html).appendTo($blockList);
 
+        if ($blockList) {
+            this.$ = $(html).appendTo($blockList);
+        } else {
+            this.$ = $(html)
+        }
         this.$.attr('id', this.id);
         this.$.addClass('ui-widget-content').addClass('block-item').addClass('can-drop');
         this._addDataAttr();
 
-        if (this.info.hasOwnProperty('hidden') && this.info.hidden) {
-            this.$.hide();
-        } else {
-            this._setDraggable();
+        if (!_ChartFlows.utils.statics.getApi().config.disableDrag) {
+            if (this.info.hasOwnProperty('hidden') && this.info.hidden) {
+                this.$.hide();
+            } else {
+                if ($blockList) {
+                    this._setDraggable();
+                }
+            }
         }
     }
 

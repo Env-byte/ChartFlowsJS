@@ -12,11 +12,13 @@ _ChartFlows.classes.canvas = class {
 
     init() {
         this._hDrop = _ChartFlows.utils.drop();
-        this._$element.droppable({
-            tolerance: "fit",
-            accept: ".block-item.can-drop",
-            drop: this._hDrop.dropHandle
-        })
+        if (!_ChartFlows.utils.statics.getApi().config.disableDrag) {
+            this._$element.droppable({
+                tolerance: "fit",
+                accept: ".block-item.can-drop",
+                drop: this._hDrop.dropHandle
+            })
+        }
     }
 
     /**
@@ -90,7 +92,16 @@ _ChartFlows.classes.canvas = class {
         newBlock.instanceOf = instanceOf.id;
         newBlock.setPos(left, top);
         newBlock.type = instanceOf.type;
-        _ChartFlows.utils.eventDispatch.fire('createdblockentity', newBlock, instanceOf)
+
+        // this is to ensure that the correct id is sent back
+        // during load the id of the element is changed straight after init
+        if (_ChartFlows.utils.statics.getApi().loading === false) {
+            _ChartFlows.utils.eventDispatch.fire('createdblockentity', newBlock, instanceOf)
+        } else {
+            setTimeout(() => {
+                _ChartFlows.utils.eventDispatch.fire('createdblockentity', newBlock, instanceOf)
+            }, 10);
+        }
 
         let result;
         if (_ChartFlows.utils.statics.getApi().loading === false) {
@@ -140,10 +151,11 @@ _ChartFlows.classes.canvas = class {
         this._blocks.removeNode(blockEntity.id)
         this._blocks.addNode(node, parent)
 
-        this._BuildLinks(parentNode, node)
-        _ChartFlows.utils.eventDispatch.fire('blockreparent', blockEntity, parentNode.value)
-        _ChartFlows.utils.eventDispatch.fire('afterblocksnap', blockEntity, parentNode || false)
-
+        setTimeout(() => {
+            this._BuildLinks(parentNode, node)
+            _ChartFlows.utils.eventDispatch.fire('blockreparent', blockEntity, parentNode.value)
+            _ChartFlows.utils.eventDispatch.fire('afterblocksnap', blockEntity, parentNode || false)
+        }, 30);
     }
 
     /**
