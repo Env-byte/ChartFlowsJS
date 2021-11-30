@@ -275,7 +275,6 @@ _ChartFlows
     }
 
     rebuildNodeLinks() {
-        //the that the arrows should branch from
         let child, arrow;
         let classDef = ChartFlows.getSymbol('Arrow');
 

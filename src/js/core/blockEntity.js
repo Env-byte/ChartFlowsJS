@@ -13,12 +13,12 @@ _ChartFlows.classes.blockEntity = class {
          */
         this._instanceOf = '';
         this._id = 'Entity_' + _ChartFlows.utils.statics.genId()
+        this._hDrag = _ChartFlows.utils.drag(this._id);
         this.$ = $ele;
         this._parentID = null;
         this._init();
         this.type = '';
         this._info = {};
-        this._hDrag = null;
         this.data = new _ChartFlows.utils.data();
         this._pos = {
             left: '0px',
@@ -89,7 +89,6 @@ _ChartFlows.classes.blockEntity = class {
         //this._createSnapIndicator();
         let api = _ChartFlows.utils.statics.getApi();
         if (!_ChartFlows.utils.statics.getApi().config.disableDrag) {
-            this._hDrag = _ChartFlows.utils.drag(this._id);
             this.$.draggable({
                 containment: api.canvas.element,
                 handle: this.$.find('.container-fluid'),
@@ -124,7 +123,7 @@ _ChartFlows.classes.blockEntity = class {
 
     _createSnapIndicator() {
         this.$.find('.snapIndicator').remove();
-        let style = 'left:' + ((this.$.width() / 2) - 15) + 'px;bottom:-6px;';
+        let style = 'left:' + ((this.$.width() / 2) - 5) + 'px;bottom:-6px;';
         style += 'visibility:hidden;';
         let indicator = $('<div style="' + style + '" class="snapIndicator ' + this._id + '"></div>');
         this.$.append(indicator);

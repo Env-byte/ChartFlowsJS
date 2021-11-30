@@ -249,8 +249,10 @@ _ChartFlows.api = class {
                 }
             }
             if (parent instanceof _ChartFlows.utils.treeNode) {
-                parent.repositionChildren()
-                parent.rebuildNodeLinks();
+                setTimeout(() => {
+                    parent.repositionChildren()
+                    parent.rebuildNodeLinks();
+                }, 150)
             }
             //console.log('originalID', originalID)
             //console.log('node.id', node.id)

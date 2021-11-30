@@ -1,5 +1,5 @@
 $('body').append(
-    '<svg preserveaspectratio="none" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+    '<svg id="svgArrow" preserveaspectratio="none" fill="none" xmlns="http://www.w3.org/2000/svg">' +
     '<defs>' +
     '<marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth">' +
     '<path d="M0,0 L0,6 L4,3 z" class="arrowHead"/>' +
