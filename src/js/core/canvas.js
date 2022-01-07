@@ -4,7 +4,10 @@ _ChartFlows.classes.canvas = class {
      * @param element
      */
     constructor(element) {
-        this._itemClass = _ChartFlows.classes.blockEntity;
+        this._customClass = {
+            'Decision': _ChartFlows.classes.decisionEntity,
+        };
+        this._baseClass = _ChartFlows.classes.blockEntity;
         this._$element = element;
         this._blocks = new _ChartFlows.utils.tree(null);
         this.init();
@@ -30,7 +33,6 @@ _ChartFlows.classes.canvas = class {
     }
 
     /**
-     *
      * @return { _ChartFlows.utils.tree}
      */
     get blocks() {
@@ -38,13 +40,13 @@ _ChartFlows.classes.canvas = class {
     }
 
     /**
-     *
      * @param {jQuery} $block
      * @param {_ChartFlows.classes._Block} instanceOf
      * @param {_ChartFlows.utils.treeNode|false} snapped
+     * @param  OnBlockCreated
      * @return { _ChartFlows.utils.treeNode|boolean}
      */
-    addBlockEntity($block, instanceOf, snapped) {
+    addBlockEntity($block, instanceOf, snapped, OnBlockCreated) {
         let blockCount = 0;
         this._blocks.traverse(function (node) {
             if (node) {
@@ -56,9 +58,7 @@ _ChartFlows.classes.canvas = class {
         let parentNode = false;
 
         if (blockCount === 0) {
-
             parent = 'root';
-
         } else {
             if (ChartFlows.config.debug === 1) {
                 console.log('snappedTo', snapped)
@@ -75,7 +75,6 @@ _ChartFlows.classes.canvas = class {
         }
 
         //replace $block with the canvas template from the class the block is instanced from
-
         let $parent = $block.parent();
 
         let left = $block.css('left');
@@ -87,7 +86,18 @@ _ChartFlows.classes.canvas = class {
         $canvasBlock.addClass('block-item');
 
         //setup class
-        let newBlock = new this._itemClass($canvasBlock);
+        let newBlock
+        if (this._customClass.hasOwnProperty(instanceOf.type)) {
+            newBlock = new this._customClass[instanceOf.type]($canvasBlock);
+        } else {
+            newBlock = new this._baseClass($canvasBlock);
+        }
+        if (typeof OnBlockCreated === "function") {
+            if (OnBlockCreated(newBlock) === false) {
+                $canvasBlock.remove();
+                return false;
+            }
+        }
         newBlock.info = $.extend(true, {}, instanceOf.info);
         newBlock.instanceOf = instanceOf.id;
         newBlock.setPos(left, top);
@@ -137,10 +147,9 @@ _ChartFlows.classes.canvas = class {
             return;
         }
         let parentNode = this.getBlockEntityNode(snapped[0]);
+
         let parent = parentNode.id;
-
         let result = _ChartFlows.utils.eventDispatch.fire('blocksnap', blockEntity, parentNode.value)
-
         if (result === false) {
             this._revertPosition(blockEntity);
             return;
@@ -148,8 +157,21 @@ _ChartFlows.classes.canvas = class {
 
         //detach from tree remove arrows
         let node = this._blocks.search(blockEntity.id)
+        let existingParent = this._blocks.search(blockEntity.parentID);
+
+        if (existingParent.value instanceof _ChartFlows.classes.decisionEntity) {
+            existingParent.value.removeBranch(blockEntity.id);
+        }
         this._blocks.removeNode(blockEntity.id)
         this._blocks.addNode(node, parent)
+
+        if (parentNode.value instanceof _ChartFlows.classes.decisionEntity) {
+            if ($(snapped[0]).hasClass('true')) {
+                parentNode.value.setBranch(true, blockEntity);
+            } else {
+                parentNode.value.setBranch(false, blockEntity);
+            }
+        }
 
         setTimeout(() => {
             this._BuildLinks(parentNode, node)
@@ -185,6 +207,10 @@ _ChartFlows.classes.canvas = class {
         if (parentID !== null) {
             let parentNode = this._blocks.search(node.value.parentID);
             //rebuild parent node links
+            if (parentNode.value instanceof _ChartFlows.classes.decisionEntity) {
+                parentNode.value.removeBranch(id)
+            }
+
             if (parentNode) {
                 this._BuildLinks(parentNode, false);
             }
@@ -200,12 +226,14 @@ _ChartFlows.classes.canvas = class {
      */
     _BuildLinks(parentNode, node) {
         //reattach to tree reposition then build arrows.
-        parentNode.repositionChildren()
-        parentNode.rebuildNodeLinks();
         if (node && node instanceof _ChartFlows.utils.treeNode) {
             node.value.parentID = parentNode.value.id;
             node.value.reparent(parentNode.value.$);
         }
+        this.blocks.traverse(function (node) {
+            node.repositionChildren();
+            node.rebuildNodeLinks();
+        });
     }
 
     /**

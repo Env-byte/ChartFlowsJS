@@ -51,6 +51,12 @@ _ChartFlows.classes._Block = class {
                 }
             }
         }
+
+        this.$.on('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            _ChartFlows.utils.eventDispatch.fire('blockListClick', e, this)
+        })
     }
 
     /**

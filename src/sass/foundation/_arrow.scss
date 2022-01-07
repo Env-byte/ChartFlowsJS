@@ -23,3 +23,19 @@ $arrow-color: #C5CCD0;
   position: absolute;
   top: -400px;
 }
+
+.arrowTrue, .arrowTrue line {
+  stroke: green !important;
+}
+
+.arrowFalse, .arrowFalse line {
+  stroke: red !important;
+}
+
+.arrowFalse svg .marker {
+  marker-end: url(#arrowFalse) !important;
+}
+
+.arrowTrue svg .marker {
+  marker-end: url(#arrowTrue) !important;
+}

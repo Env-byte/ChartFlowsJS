@@ -53,6 +53,5 @@ _ChartFlows.classes.blockList = class {
         } else {
             return false;
         }
-
     }
 }

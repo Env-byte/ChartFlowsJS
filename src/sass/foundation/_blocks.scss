@@ -55,7 +55,7 @@ $block-type-colors: (
 
 /* #starter node
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
-$decision-node-size: 70px;
+$decision-node-size: 90px;
 .decision-node {
   background: #fff;
   height: $decision-node-size;
@@ -73,8 +73,8 @@ $decision-node-size: 70px;
 }
 
 .decision-wrapper {
-  height: 100px;
-  width: 100px;
+  height: 120px;
+  width: 120px;
 }
 
 .decision-node-inner {

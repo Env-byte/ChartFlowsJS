@@ -11,12 +11,42 @@
   transform: scale(1);
 }
 
+.snapIndicator.true {
+  background-color: green;
+}
+
+.snapIndicator.false {
+  background-color: red;
+}
+
 .snapIndicator:after {
   content: "";
   display: block;
   width: 12px;
   height: 12px;
   background-color: #217ce8;
+  transform: scale(1.7);
+  opacity: .2;
+  border-radius: 60px;
+}
+
+.snapIndicator.true:after {
+  content: "";
+  display: block;
+  width: 12px;
+  height: 12px;
+  background-color: green;
+  transform: scale(1.7);
+  opacity: .2;
+  border-radius: 60px;
+}
+
+.snapIndicator.false:after {
+  content: "";
+  display: block;
+  width: 12px;
+  height: 12px;
+  background-color: red;
   transform: scale(1.7);
   opacity: .2;
   border-radius: 60px;

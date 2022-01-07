@@ -5,6 +5,16 @@ $('body').append(
     '<path d="M0,0 L0,6 L4,3 z" class="arrowHead"/>' +
     '</marker>' +
     '</defs>' +
+    '</svg>'+
+    '<svg preserveaspectratio="none" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+    '<marker id="arrowFalse" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth">' +
+    '<path fill="red" stroke="red" d="M0,0 L0,6 L4,3 z"/>' +
+    '</marker>' +
+    '</svg>' +
+    '<svg preserveaspectratio="none" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+    '<marker id="arrowTrue" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth">' +
+    '<path fill="green" stroke="green" d="M0,0 L0,6 L4,3 z"/>' +
+    '</marker>' +
     '</svg>'
 );
 _ChartFlows.classes._Arrow = class extends _ChartFlows.classes._Symbol {

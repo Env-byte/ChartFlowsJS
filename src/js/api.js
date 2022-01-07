@@ -130,6 +130,8 @@ _ChartFlows.api = class {
     }
 
     load(object) {
+        console.log('api - load object', object);
+
         if (!object.hasOwnProperty('tree')) {
             console.error("Object key 'tree' missing");
             return;
@@ -140,11 +142,9 @@ _ChartFlows.api = class {
             return;
         }
 
-        //todo clear canvas
-
         let blockTemplates = this._blockList.blocks;
         let nodes = {}, node, parent, treeVal;
-
+        let branchMap = {};
         let tree = this._canvas.blocks;
         if (tree instanceof _ChartFlows.utils.tree) {
             let node = tree.search(this.config.startNodeID)
@@ -177,11 +177,29 @@ _ChartFlows.api = class {
             }
 
             node = this.addToCanvas(blockTemplates[treeVal.block._instanceOf], parent, {
-                left: treeVal.block.left,
-                top: treeVal.block.top,
                 id: treeVal.block.id,
-                data: treeVal.block.info.data
+                data: treeVal.block.info.data,
             });
+            console.log('api - node type', node.value);
+            if (node.value instanceof _ChartFlows.classes.decisionEntity) {
+                branchMap[treeVal.block.id] = treeVal.block.branches;
+            }
+            console.log('api - parent type', parent.value);
+            if (parent.value instanceof _ChartFlows.classes.decisionEntity) {
+                if (branchMap[parent.id]['true'] === treeVal.block.id) {
+                    parent.value.setBranch(true, node.value);
+                } else if (branchMap[parent.id]['false'] === treeVal.block.id) {
+                    parent.value.setBranch(false, node.value);
+                }
+            }
+
+            if (parent instanceof _ChartFlows.utils.treeNode) {
+                setTimeout(() => {
+                    parent.repositionChildren()
+                    parent.rebuildNodeLinks();
+                }, 150)
+            }
+
             nodes[node.id] = node;
         }
 
@@ -197,22 +215,22 @@ _ChartFlows.api = class {
                     continue;
                 }
 
-                for (let i = 0, iL = treeVal['symbols'].length; i < iL; i++) {
-                    let symbol = treeVal['symbols'][i];
+                /* for (let i = 0, iL = treeVal['symbols'].length; i < iL; i++) {
+                     let symbol = treeVal['symbols'][i];
 
-                    for (let x = 0, xL = node.symbols.length; x < xL; x++) {
-                        //console.log('linkedTo', node.symbols[x].linkedTo === symbol.linkedTo);
-                        if (node.symbols[x].linkedTo === symbol.linkedTo) {
-                            node.symbols[x].id = symbol.id;
-                            for (let n = 0, nL = symbol.data.length; n < nL; n++) {
-                                node.symbols[x].data.add(symbol.data[n].name, symbol.data[n].value);
-                            }
-                        }
+                     for (let x = 0, xL = node.symbols.length; x < xL; x++) {
+                         //console.log('linkedTo', node.symbols[x].linkedTo === symbol.linkedTo);
+                         if (node.symbols[x].linkedTo === symbol.linkedTo) {
+                             node.symbols[x].id = symbol.id;
+                             for (let n = 0, nL = symbol.data.length; n < nL; n++) {
+                                 node.symbols[x].data.add(symbol.data[n].name, symbol.data[n].value);
+                             }
+                         }
 
-                        //console.log('symbol', symbol);
-                        // console.log('parentNode.symbols[i]', node.symbols[i]);
-                    }
-                }
+                         //console.log('symbol', symbol);
+                         // console.log('parentNode.symbols[i]', node.symbols[i]);
+                     }
+             }*/
             }
         })
 
@@ -234,9 +252,6 @@ _ChartFlows.api = class {
 
         let node = this._canvas.addBlockEntity($template, instanceOf, parent);
         if (node) {
-            if (options.hasOwnProperty('left') && options.hasOwnProperty('top')) {
-                node.value.setPos(options.left, options.top);
-            }
             let originalID = node.id;
             if (options.hasOwnProperty('id')) {
                 // need to get parent and change the linkedTo id on the arrow symbol
@@ -248,12 +263,7 @@ _ChartFlows.api = class {
                     node.value.data.add(options.data[i].name, options.data[i].value);
                 }
             }
-            if (parent instanceof _ChartFlows.utils.treeNode) {
-                setTimeout(() => {
-                    parent.repositionChildren()
-                    parent.rebuildNodeLinks();
-                }, 150)
-            }
+
             //console.log('originalID', originalID)
             //console.log('node.id', node.id)
             if (originalID !== node.id) {

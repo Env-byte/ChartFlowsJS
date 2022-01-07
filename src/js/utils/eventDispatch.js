@@ -41,7 +41,14 @@ _ChartFlows.utils.eventDispatch = {
          * @param {eventData} event - the normal event data from a click event
          * @param {_ChartFlows.classes.blockEntity} block
          */
-        'blockclick', //done
+        'blockclick',
+
+        //done
+        /* called on block list click
+        * @param {eventData} event - the normal event data from a click event
+        * @param {_ChartFlows.classes.block} blockListItem
+        */
+        'blockListClick', //done
 
         /*
          * called after the block gets re-parented
@@ -87,6 +94,12 @@ _ChartFlows.utils.eventDispatch = {
          *
          */
         'buildlinks', //done
+
+        /*
+        * when a block fails to snap
+        * @param {string} message
+        */
+        'failedtosnapblock'
     ],
 
     /**

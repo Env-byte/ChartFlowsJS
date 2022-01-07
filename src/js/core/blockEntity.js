@@ -11,6 +11,7 @@ _ChartFlows.classes.blockEntity = class {
          * used to reconstruct this entity
          * @private
          */
+        this.ClassName = 'BlockEntity'
         this._instanceOf = '';
         this._id = 'Entity_' + _ChartFlows.utils.statics.genId()
         this._hDrag = _ChartFlows.utils.drag(this._id);
@@ -86,7 +87,6 @@ _ChartFlows.classes.blockEntity = class {
         this.$.attr('id', this._id);
         this.$.removeClass('can-drop');
 
-        //this._createSnapIndicator();
         let api = _ChartFlows.utils.statics.getApi();
         if (!_ChartFlows.utils.statics.getApi().config.disableDrag) {
             this.$.draggable({
@@ -127,7 +127,6 @@ _ChartFlows.classes.blockEntity = class {
         style += 'visibility:hidden;';
         let indicator = $('<div style="' + style + '" class="snapIndicator ' + this._id + '"></div>');
         this.$.append(indicator);
-
     }
 
     /**
@@ -188,8 +187,6 @@ _ChartFlows.classes.blockEntity = class {
         info.data = this.data.serialize()
         return {
             id: this._id,
-            left: this._pos.left,
-            top: this._pos.top,
             info: info,
             parentID: this._parentID,
             _instanceOf: this._instanceOf

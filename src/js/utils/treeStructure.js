@@ -177,10 +177,7 @@ _ChartFlows.utils.tree = class {
 
     }
 }
-
-_ChartFlows
-    .utils
-    .treeNode = class {
+_ChartFlows.utils.treeNode = class {
 
     /**
      *
@@ -212,15 +209,20 @@ _ChartFlows
             child = this.children[0];
             let offset = 0;
 
+            console.log('this.$.width()', this.value.$.width())
+            console.log('child.$.width()', child.value.$.width())
+
             if (this.value.$.width() > child.value.$.width()) {
                 offset = this.value.$.width() - child.value.$.width();
             } else if (this.value.$.width() < child.value.$.width()) {
-                offset = -this.value.$.width();
+                offset =  (this.value.$.width()/2) - (child.value.$.width()/2);
+                console.log('offset', offset)
             }
 
             if (offset > 0) {
                 offset = (offset / 2)
             }
+
             child.value.setPos('0px', top + 'px');
             child.value.$.css('margin-left', offset + 'px');
         } else {
@@ -276,8 +278,8 @@ _ChartFlows
 
     rebuildNodeLinks() {
         let child, arrow;
-        let classDef = ChartFlows.getSymbol('Arrow');
 
+        let classDef = ChartFlows.getSymbol('Arrow');
         for (let i = 0, iL = this.symbols.length; i < iL; i++) {
             this.symbols[i].remove();
         }
@@ -290,10 +292,22 @@ _ChartFlows
         for (let i = 0, iL = this.children.length; i < iL; i++) {
             arrow = new classDef(this);
             child = this.children[i];
+
             //for each child build arrow
             arrow.linkedTo = child.id;
             arrow.render(this.value, child.value)
             this.symbols.push(arrow);
+
+            if (this.value instanceof _ChartFlows.classes.decisionEntity) {
+                console.log('treeStructure - this.value.branches', this.value.branches)
+                console.log('treeStructure - child.id', child.id)
+                if (this.value.branches['true'] && this.value.branches['true'].id === child.id) {
+                    arrow.$.addClass('arrowTrue')
+                }
+                if (this.value.branches['false'] && this.value.branches['false'].id === child.id) {
+                    arrow.$.addClass('arrowFalse')
+                }
+            }
         }
 
         _ChartFlows.utils.eventDispatch.fire('buildlinks', this)
@@ -312,16 +326,6 @@ _ChartFlows
     }
 
     serialize() {
-        let data = {
-            block: this.value.serialize(),
-            symbols: []
-        }
-
-        for (let i = 0, iL = this.symbols.length; i < iL; i++) {
-            data.symbols.push(this.symbols[i].serialize());
-        }
-
-        return data;
-
+        return {block: this.value.serialize()};
     }
 }

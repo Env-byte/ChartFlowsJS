@@ -37,24 +37,29 @@ _ChartFlows.utils.drag = function (rootID) {
             if ($originalEle) {
                 $helperEle = ui.helper;
                 $helperEle.attr('data-instance', $originalEle.attr('id'));
-
-                if ($originalEle.hasClass('can-drop')) {
+                /*if ($originalEle.hasClass('can-drop')) {
                     // new block dragged on to canvas
-
                 } else {
                     // block entity being dragged around on canvas
-
+                }*/
+                if (ChartFlows.config.debug === 1) {
+                    console.log('Drag - startHandle');
                 }
-
                 _ChartFlows.utils.eventDispatch.fire('dragstart', $originalEle, $helperEle)
             }
         },
         endHandle: function () {
 
             // block entity being dragged around on canvas
+            if (ChartFlows.config.debug === 1) {
+                console.log('drag - $originalEle.hasClass("can-drop")', !$originalEle.hasClass('can-drop'));
+            }
             if (!$originalEle.hasClass('can-drop')) {
                 let blockEntity = _ChartFlows.utils.statics.getBlockEntityNode($originalEle).value;
-                let snapped = _ChartFlows.utils.statics.getSnappedElements($originalEle);
+                let snapped = _ChartFlows.utils.statics.getSnappedElements($originalEle, false);
+                if (ChartFlows.config.debug === 1) {
+                    console.log('drag - parentID', blockEntity.parentID);
+                }
                 if (blockEntity.parentID) {
                     canvas.changeBlockEntityParent(blockEntity, snapped)
                 }
@@ -63,7 +68,9 @@ _ChartFlows.utils.drag = function (rootID) {
             if (visibleIndicator) {
                 visibleIndicator.css('visibility', 'hidden');
             }
-
+            if (ChartFlows.config.debug === 1) {
+                console.log('Drag - endHandle');
+            }
             _ChartFlows.utils.eventDispatch.fire('dragend')
         },
         moveBlock: function () {
@@ -81,7 +88,9 @@ _ChartFlows.utils.drag = function (rootID) {
                     visibleIndicator.css('visibility', 'hidden');
                 }
             }
-
+            if (ChartFlows.config.debug === 1) {
+                console.log('Drag - moveBlock');
+            }
             _ChartFlows.utils.eventDispatch.fire('dragmove', $originalEle, $helperEle)
         },
         updateRootID: (id) => {

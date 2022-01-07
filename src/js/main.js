@@ -27,7 +27,6 @@ ChartFlows.config.addTemplate('Start', `<div class="start"><div class="container
     </div>
     </div></div>`);
 
-
 ChartFlows.on('initialized', (api) => {
     if (api instanceof _ChartFlows.api && api.config.showStart) {
         api.blockList.add('Start', {
@@ -45,8 +44,7 @@ ChartFlows.on('initialized', (api) => {
                 let node = api.addToCanvas(startTemplate, [], {id: api.config.startNodeID});
                 if (node) {
                     let left = (api.canvas.element.width() / 2) - (node.value.$.width() / 2);
-                    let top = node.value.$.height() + 40;
-                    node.value.setPos(left + 'px', top + 'px');
+                    node.value.setPos(left + 'px', 5 + 'px');
                     //show node as its set to invisible above
                     node.value.$.show();
                 }
