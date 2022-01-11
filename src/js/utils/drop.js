@@ -45,10 +45,12 @@ _ChartFlows.utils.drop = function () {
                         if (ChartFlows.config.debug === 1) {
                             console.log('Drop - drop result', result);
                         }
+
                         if (result === false) {
                             $block.remove();
                             return;
                         }
+
                         canvas.addBlockEntity($block, blockObj, parentNode, (blockEntity) => {
                             if (parentNode.value instanceof _ChartFlows.classes.decisionEntity) {
                                 if ($(snapped[0]).hasClass('true') && parentNode.value.branches['true'] === null) {

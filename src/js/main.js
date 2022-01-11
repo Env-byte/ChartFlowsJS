@@ -26,6 +26,7 @@ ChartFlows.config.addTemplate('Start', `<div class="start"><div class="container
         </div>
     </div>
     </div></div>`);
+ChartFlows.config.addTemplate('Empty', `<div class="empty"><div class="container-fluid"><div class="row"><div class="col-md-12"><p>Drag a trigger here</p></div></div></div></div>`);
 
 ChartFlows.on('initialized', (api) => {
     if (api instanceof _ChartFlows.api && api.config.showStart) {

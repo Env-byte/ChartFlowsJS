@@ -4,10 +4,6 @@ _ChartFlows.classes.canvas = class {
      * @param element
      */
     constructor(element) {
-        this._customClass = {
-            'Decision': _ChartFlows.classes.decisionEntity,
-        };
-        this._baseClass = _ChartFlows.classes.blockEntity;
         this._$element = element;
         this._blocks = new _ChartFlows.utils.tree(null);
         this.init();
@@ -37,6 +33,46 @@ _ChartFlows.classes.canvas = class {
      */
     get blocks() {
         return this._blocks;
+    }
+
+    /**
+     * @param {_ChartFlows.utils.treeNode} parentNode
+     * @param {_ChartFlows.utils.treeNode} oldNode
+     * @param {jQuery} $block
+     * @param {_ChartFlows.classes._Block} instanceOf
+     * @return { _ChartFlows.utils.treeNode|boolean}
+     */
+    replaceBlockEntity(parentNode, oldNode, $block, instanceOf, onReplace) {
+        let newBlock = _ChartFlows.utils.statics.createBlockEntity($block, instanceOf);
+        oldNode.value.$.remove();
+        oldNode.id = newBlock.id;
+        oldNode.value = newBlock;
+        newBlock.onCreate();
+
+        if (typeof onReplace === "function") {
+            onReplace(oldNode);
+        }
+
+        if (parentNode && parentNode instanceof _ChartFlows.utils.treeNode) {
+            //reposition block using the spacing from config;
+            this._BuildLinks(parentNode, oldNode)
+        }
+
+        let result;
+        if (_ChartFlows.utils.statics.getApi().loading === false) {
+            result = _ChartFlows.utils.eventDispatch.fire('blocksnap', newBlock, parentNode || false)
+            if (result === false) {
+                newBlock.$.remove();
+                console.log('blocksnap event false')
+                return false;
+            }
+        }
+
+        if (_ChartFlows.utils.statics.getApi().loading === false) {
+            _ChartFlows.utils.eventDispatch.fire('afterreplace', oldNode, parentNode || false)
+        }
+
+        return oldNode;
     }
 
     /**
@@ -74,43 +110,14 @@ _ChartFlows.classes.canvas = class {
             }
         }
 
-        //replace $block with the canvas template from the class the block is instanced from
-        let $parent = $block.parent();
+        let newBlock = _ChartFlows.utils.statics.createBlockEntity($block, instanceOf);
 
-        let left = $block.css('left');
-        let top = $block.css('top');
-        $block.remove();
-
-        let $canvasBlock = $(instanceOf.getCanvasHtml());
-        $parent.append($canvasBlock);
-        $canvasBlock.addClass('block-item');
-
-        //setup class
-        let newBlock
-        if (this._customClass.hasOwnProperty(instanceOf.type)) {
-            newBlock = new this._customClass[instanceOf.type]($canvasBlock);
-        } else {
-            newBlock = new this._baseClass($canvasBlock);
-        }
         if (typeof OnBlockCreated === "function") {
             if (OnBlockCreated(newBlock) === false) {
-                $canvasBlock.remove();
+                newBlock.$.remove();
+                console.log('OnBlockCreated false')
                 return false;
             }
-        }
-        newBlock.info = $.extend(true, {}, instanceOf.info);
-        newBlock.instanceOf = instanceOf.id;
-        newBlock.setPos(left, top);
-        newBlock.type = instanceOf.type;
-
-        // this is to ensure that the correct id is sent back
-        // during load the id of the element is changed straight after init
-        if (_ChartFlows.utils.statics.getApi().loading === false) {
-            _ChartFlows.utils.eventDispatch.fire('createdblockentity', newBlock, instanceOf)
-        } else {
-            setTimeout(() => {
-                _ChartFlows.utils.eventDispatch.fire('createdblockentity', newBlock, instanceOf)
-            }, 10);
         }
 
         let result;
@@ -118,12 +125,17 @@ _ChartFlows.classes.canvas = class {
             result = _ChartFlows.utils.eventDispatch.fire('blocksnap', newBlock, parentNode || false)
             if (result === false) {
                 newBlock.$.remove();
+                console.log('blocksnap event false')
                 return false;
             }
         }
 
         let node = new _ChartFlows.utils.treeNode(newBlock, []);
         this._blocks.addNode(node, parent);
+        console.log('loading', _ChartFlows.utils.statics.getApi().loading);
+        if (_ChartFlows.utils.statics.getApi().loading === false) {
+            newBlock.onCreate();
+        }
         if (parentNode && parentNode instanceof _ChartFlows.utils.treeNode) {
             //reposition block using the spacing from config;
             this._BuildLinks(parentNode, node)
@@ -190,11 +202,34 @@ _ChartFlows.classes.canvas = class {
         return this._blocks.search(id);
     }
 
-    removeBlockEntity(id) {
+    /**
+     *
+     * @param {string}id
+     * @param {false|null}silent
+     * @return {*}
+     */
+    removeBlockEntity(id, silent) {
         let node = this._blocks.search(id);
         let parentID = node.value.parentID;
-        let nodesRemoved = this._blocks.removeNode(id);
+        let parentNode = this._blocks.search(parentID);
 
+        //rebuild parent node links
+        if (parentNode.value instanceof _ChartFlows.classes.decisionEntity) {
+            let instanceOf = new _ChartFlows.classes._Empty('emptyBlock');
+            instanceOf.init(false);
+            let $template;
+            $template = instanceOf.$.clone().detach();
+            _ChartFlows.utils.statics.getApi().canvas.element.append($template);
+            $template.removeClass('can-drop')
+            $template.css('position', 'absolute')
+            let condition = parentNode.value.getBranchById(node.id);
+            this.replaceBlockEntity(parentNode, node, $template, instanceOf, (newNode) => {
+                parentNode.value.setBranch(condition === 'true', newNode.value)
+
+            });
+            return [node];
+        }
+        let nodesRemoved = this._blocks.removeNode(id);
         for (let key in nodesRemoved) {
             if (nodesRemoved.hasOwnProperty(key) && nodesRemoved[key] instanceof _ChartFlows.utils.treeNode) {
                 //remove arrows and block html
@@ -204,17 +239,13 @@ _ChartFlows.classes.canvas = class {
             }
         }
 
-        if (parentID !== null) {
-            let parentNode = this._blocks.search(node.value.parentID);
-            //rebuild parent node links
-            if (parentNode.value instanceof _ChartFlows.classes.decisionEntity) {
-                parentNode.value.removeBranch(id)
-            }
-
-            if (parentNode) {
-                this._BuildLinks(parentNode, false);
-            }
+        if (!silent) {
+            parentNode.value.onChildRemoved();
         }
+        if (parentNode) {
+            this._BuildLinks(parentNode, false);
+        }
+
         return nodesRemoved;
     }
 

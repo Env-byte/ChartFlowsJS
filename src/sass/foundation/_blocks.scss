@@ -1,7 +1,8 @@
 $block-type-colors: (
-        "start": #28a745,
+        "start": #5728a7,
         "process": #17a2b8,
         "decision": #ffc107,
+        "empty": #17a2b8,
 );
 .block-item.can-drop {
   box-shadow: 1px 1px 30px rgb(22 33 74 / 0%);
@@ -9,6 +10,12 @@ $block-type-colors: (
   &:hover {
     box-shadow: 0 4px 4px rgb(0 0 0 / 56%);
   }
+}
+
+.outer-glow {
+  -webkit-box-shadow: 0 0 6px 3px rgba(0, 196, 255, 0.5);
+  -moz-box-shadow: 0 0 6px 3px rgba(0, 196, 255, 0.5);
+  box-shadow: 0 0 6px 3px rgba(0, 196, 255, 0.5);
 }
 
 .block-item {

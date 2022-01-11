@@ -114,5 +114,53 @@ _ChartFlows.utils.statics = {
             scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
             scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         return {top: rect.top + scrollTop, left: rect.left + scrollLeft}
+    },
+
+    /**
+     *
+     * @param {jQuery} $block
+     * @param {_ChartFlows.classes._Block} instanceOf
+     * @return {_ChartFlows.classes.blockEntity}
+     */
+    createBlockEntity($block, instanceOf) {
+        const _CustomClass = {
+            'Decision': _ChartFlows.classes.decisionEntity,
+            'Empty': _ChartFlows.classes.emptyEntity,
+        };
+        const _BaseClass = _ChartFlows.classes.blockEntity;
+
+        let $parent = $block.parent();
+
+        let left = $block.css('left');
+        let top = $block.css('top');
+
+        //replace $block with the canvas template from the class the block is instanced from
+        $block.remove();
+        let $canvasBlock = $(instanceOf.getCanvasHtml());
+        $parent.append($canvasBlock);
+        $canvasBlock.addClass('block-item');
+
+        //setup class
+        let newBlock
+        if (_CustomClass.hasOwnProperty(instanceOf.type)) {
+            newBlock = new _CustomClass[instanceOf.type]($canvasBlock);
+        } else {
+            newBlock = new _BaseClass($canvasBlock);
+        }
+        newBlock.info = $.extend(true, {}, instanceOf.info);
+        newBlock.instanceOf = instanceOf.id;
+        newBlock.setPos(left, top);
+        newBlock.type = instanceOf.type;
+        //called when finished creating node
+        // this is to ensure that the correct id is sent back
+        // during load the id of the element is changed straight after init
+        if (_ChartFlows.utils.statics.getApi().loading === false) {
+            _ChartFlows.utils.eventDispatch.fire('createdblockentity', newBlock, instanceOf)
+        } else {
+            setTimeout(() => {
+                _ChartFlows.utils.eventDispatch.fire('createdblockentity', newBlock, instanceOf)
+            }, 10);
+        }
+        return newBlock;
     }
 }

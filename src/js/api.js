@@ -120,9 +120,12 @@ _ChartFlows.api = class {
         //save tree
         let tree = [];
         this.canvas.blocks.traverse((node) => {
-            if (node)
+            if (node) {
                 tree.push(node.serialize());
+            }
         })
+
+        console.log('save', {tree: tree})
 
         return {
             tree: tree
@@ -131,6 +134,7 @@ _ChartFlows.api = class {
 
     load(object) {
         console.log('api - load object', object);
+        this.loading = true;
 
         if (!object.hasOwnProperty('tree')) {
             console.error("Object key 'tree' missing");
@@ -143,6 +147,10 @@ _ChartFlows.api = class {
         }
 
         let blockTemplates = this._blockList.blocks;
+        let emptyBlock = new _ChartFlows.classes._Empty('emptyBlock');
+        emptyBlock.init(false);
+
+        blockTemplates['emptyBlock'] = emptyBlock;
         let nodes = {}, node, parent, treeVal;
         let branchMap = {};
         let tree = this._canvas.blocks;
@@ -155,6 +163,7 @@ _ChartFlows.api = class {
 
         for (let i = 0, iL = object.tree.length; i < iL; i++) {
             treeVal = object.tree[i];
+            console.log('treeVal.block', treeVal.block)
             if (treeVal.block.id === 'Entity_StartNode') {
                 //skip over start node if exists
                 continue;
@@ -165,7 +174,7 @@ _ChartFlows.api = class {
                 return;
             }
             if (!blockTemplates.hasOwnProperty(treeVal.block._instanceOf)) {
-                console.error("Cannot create a block from the template" + treeVal.block._instanceOf);
+                console.error("Cannot create a block from the template " + treeVal.block._instanceOf);
                 return;
             }
             if (typeof treeVal.block.parentID === "string") {
@@ -202,37 +211,7 @@ _ChartFlows.api = class {
 
             nodes[node.id] = node;
         }
-
-        // traverse all nodes and set data
-
-        this.canvas.blocks.traverse(node => {
-            // get this nodes parent
-            // check if the symbols is linked to this node
-            for (let i = 0, iL = object.tree.length; i < iL; i++) {
-                let treeVal = object.tree[i];
-
-                if (treeVal.block.id !== node.id) {
-                    continue;
-                }
-
-                /* for (let i = 0, iL = treeVal['symbols'].length; i < iL; i++) {
-                     let symbol = treeVal['symbols'][i];
-
-                     for (let x = 0, xL = node.symbols.length; x < xL; x++) {
-                         //console.log('linkedTo', node.symbols[x].linkedTo === symbol.linkedTo);
-                         if (node.symbols[x].linkedTo === symbol.linkedTo) {
-                             node.symbols[x].id = symbol.id;
-                             for (let n = 0, nL = symbol.data.length; n < nL; n++) {
-                                 node.symbols[x].data.add(symbol.data[n].name, symbol.data[n].value);
-                             }
-                         }
-
-                         //console.log('symbol', symbol);
-                         // console.log('parentNode.symbols[i]', node.symbols[i]);
-                     }
-             }*/
-            }
-        })
+        this.loading = false;
 
     }
 
@@ -243,14 +222,13 @@ _ChartFlows.api = class {
      * @param {{}} options
      */
     addToCanvas(instanceOf, parent, options) {
-        this.loading = true;
 
         let $template = instanceOf.$.clone().detach();
         this._canvas.element.append($template);
         $template.removeClass('can-drop')
         $template.css('position', 'absolute')
 
-        let node = this._canvas.addBlockEntity($template, instanceOf, parent);
+        let node = this._canvas.addBlockEntity($template, instanceOf, parent, false);
         if (node) {
             let originalID = node.id;
             if (options.hasOwnProperty('id')) {
@@ -280,7 +258,6 @@ _ChartFlows.api = class {
         }
 
 
-        this.loading = false;
         return node;
     }
 }

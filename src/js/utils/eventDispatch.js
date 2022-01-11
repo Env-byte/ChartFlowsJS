@@ -99,7 +99,14 @@ _ChartFlows.utils.eventDispatch = {
         * when a block fails to snap
         * @param {string} message
         */
-        'failedtosnapblock'
+        'failedtosnapblock',
+
+        /*
+        * after a block has been replaced
+        * @param {_ChartFlows.utils.treeNode} oldNode
+        * @param {_ChartFlows.utils.treeNode} parentNode
+        */
+        'afterreplace'
     ],
 
     /**

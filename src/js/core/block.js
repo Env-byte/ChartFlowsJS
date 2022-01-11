@@ -26,11 +26,8 @@ _ChartFlows.classes._Block = class {
          */
         this._hTemplate = _ChartFlows.utils.template();
         this._hDrag = _ChartFlows.utils.drag(this.id);
-
         this.listTemplate = ChartFlows.config.getTemplate('ListTemplate');
-
         this.cavasTemplate = ChartFlows.config.getTemplate(this.type);
-
         let html = this._hTemplate.parse(this.listTemplate, this);
 
         if ($blockList) {

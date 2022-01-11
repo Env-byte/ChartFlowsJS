@@ -93,7 +93,7 @@ _ChartFlows.classes.blockEntity = class {
                 containment: api.canvas.element,
                 handle: this.$.find('.container-fluid'),
                 snap: '.snapIndicator:not(.' + this._id + ')', // create an indicator to snap to, then draw arrow from this block to the next
-                snapMode: 'outer',
+                snapMode: 'both',
                 snapTolerance: api.config.snapTolerance,
                 drag: this._hDrag.moveBlock,
                 start: (event, ui) => {
@@ -175,10 +175,23 @@ _ChartFlows.classes.blockEntity = class {
      * @param {string} id
      */
     set id(id) {
+        //can not change start node id
+        if (this._id === 'Entity_StartNode') {
+            return;
+        }
+
         this._id = id;
+        this.$.attr('id', id);
         this.$.attr('id', id);
         if (this._hDrag) {
             this._hDrag.updateRootID(id);
+        }
+        this._createSnapIndicator();
+        //change child parent id references
+        let canvas = _ChartFlows.utils.statics.getApi().canvas;
+        let thisNode = canvas.blocks.search(this._id);
+        for (let i = 0, iL = thisNode.children.length; i < iL; i++) {
+            thisNode.children[i].value.parentID = this._id;
         }
     }
 
@@ -191,5 +204,13 @@ _ChartFlows.classes.blockEntity = class {
             parentID: this._parentID,
             _instanceOf: this._instanceOf
         }
+    }
+
+    onCreate() {
+
+    }
+
+    onChildRemoved() {
+
     }
 }

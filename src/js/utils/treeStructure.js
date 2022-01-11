@@ -215,7 +215,7 @@ _ChartFlows.utils.treeNode = class {
             if (this.value.$.width() > child.value.$.width()) {
                 offset = this.value.$.width() - child.value.$.width();
             } else if (this.value.$.width() < child.value.$.width()) {
-                offset =  (this.value.$.width()/2) - (child.value.$.width()/2);
+                offset = (this.value.$.width() / 2) - (child.value.$.width() / 2);
                 console.log('offset', offset)
             }
 
@@ -253,7 +253,7 @@ _ChartFlows.utils.treeNode = class {
             for (let i = 0, iL = this.children.length; i < iL; i++) {
                 child = this.children[i];
 
-                if (this.value.$.width() == child.value.$.width()) {
+                if (this.value.$.width() === child.value.$.width()) {
                     offset = leftStart;
                 } else {
                     offset = leftStart;
@@ -292,6 +292,7 @@ _ChartFlows.utils.treeNode = class {
         for (let i = 0, iL = this.children.length; i < iL; i++) {
             arrow = new classDef(this);
             child = this.children[i];
+
 
             //for each child build arrow
             arrow.linkedTo = child.id;

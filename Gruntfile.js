@@ -16,6 +16,7 @@ module.exports = function (grunt) {
                     '<%= pkg.directories.src %>/js/api.js',
                     '<%= pkg.directories.src %>/js/utils/*.js',
                     '<%= pkg.directories.src %>/js/main.js',
+                    '<%= pkg.directories.src %>/js/entity/*.js',
                     '<%= pkg.directories.src %>/js/core/*.js',
                     '<%= pkg.directories.src %>/js/blocks/*.js',
                     '<%= pkg.directories.src %>/js/symbols/*.js'
